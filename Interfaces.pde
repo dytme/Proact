@@ -20,7 +20,9 @@ interface Clickable {
 
 
 interface Hoverable {
-
+    default boolean isMouseOver() {
+        return false;
+    }
 }
 
 
@@ -37,12 +39,8 @@ interface Draggable {
 
 // Can contain other UI elements
 interface Container {
-
-}
-
-
-// Is rendered through the zIndex Rendering Engine for Proact
-interface zIndexRendering {
-
+    float[] getPosition();
+    float[] getSize();
+    int getZIndex();
 }
 
