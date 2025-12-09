@@ -39,11 +39,21 @@ class DefaultThemeClass implements UITheme {
     // █▀░ █▀▄ █▀█ █░▀░█ ██▄   ▄█ ░█░ ░█░ █▄▄ ██▄ ▄█
 
     FrameStyle frameDefault = new FrameStyle(
-        // TODO: Add actual properties for the style lol
+        #D9D9D9,
+        0,
+        4,
+        1,
+        #000000,
+        0
     ); 
 
     FrameStyle frameHovered = new FrameStyle(
-        // TODO: Add actual properties for the style lol
+        #999999,
+        0,
+        4,
+        1,
+        #000000,
+        0
     );
 
 
@@ -65,6 +75,10 @@ class DefaultThemeClass implements UITheme {
 // █▀▄ ▄▀█ █▀█ █▄▀   ▀█▀ █░█ █▀▀ █▀▄▀█ █▀▀
 // █▄▀ █▀█ █▀▄ █░█   ░█░ █▀█ ██▄ █░▀░█ ██▄
 
+// THIS BIT OF CODE IS FUNCTIONAL, JUST COMMENTED OUT SO I DON'T HAVE TO CREATE THE THEME JUST NOW
+// IT WAS A TEST FOR THE ARCHITECTURE OF A COMPLETE CUSTOM THEME
+
+/*
 class DarkThemeClass implements UITheme {
 
     UITheme fallback = DefaultTheme;
@@ -95,7 +109,7 @@ class DarkThemeClass implements UITheme {
     }
 
 }
-
+*/
 
 
 
@@ -118,12 +132,19 @@ class FrameStyle {
     int cornerRadius = 4;
 
     // Stroke
-    float strokeWidth = 1;
+    float strokeWeight = 1;
     color strokeColor = #000000;
     float strokeTransparency = 0;
     
-    // TODO: Add all of the fields above as fields in (overloaded?) constructors
-    FrameStyle() {
+    FrameStyle(color backgroundColor, float backgroundTransparency, int cornerRadius, float strokeWeight, color strokeColor, float strokeTransparency) {
+
+        this.backgroundColor = backgroundColor;
+        this.backgroundTransparency = backgroundTransparency;
+        this.cornerRadius = cornerRadius;
+
+        this.strokeWeight = strokeWeight;
+        this.strokeColor = strokeColor;
+        this.strokeTransparency = strokeTransparency;
 
     }
 

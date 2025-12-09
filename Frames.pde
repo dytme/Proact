@@ -7,30 +7,31 @@
 ██║░░░░░██║░░██║██║░░██║██║░╚═╝░██║███████╗██████╔╝
 ╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░
 
-Containers that can hold other elements
+Basic container(s) that can hold other elements
 
 */
 
-class Frame {
+public class Frame extends UIElement implements Hoverable {
 
-    // Positioning Fields
-    float xAbs, yAbs, xPos, yPos;
-    float xSize, ySize;
-    float xAnchor, yAnchor;
+    // All of the styles for each possible state of the element
+    FrameStyle frameDefault = theme.frame(UIState.DEFAULT);
+    FrameStyle frameHovered = theme.frame(UIState.DEFAULT);
 
-    // Rendering Fields
-    UITheme theme;
-    int zIndex;
-    boolean visible;
-    
-    // Event Fields
-    Runnable onClick;
-    Runnable onHover;
-    Runnable onDrag;
+    // Whatever style is currently applied. Will be changed whenever the field 'state' changes.
+    FrameStyle currentStyle = frameDefault;
 
-    
-    Frame(float xPos, float yPos){
-        this.xPos = xPos;
-        this.yPos = yPos;
+         // Hierarchy       // Style       // Render   // Positioning        // Size
+    public Frame(Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize) {
+        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
     }
+
+    void render() {
+
+        fill(currentStyle.backgroundColor);
+        strokeWeight(currentStyle.strokeWeight);
+        stroke(currentStyle.strokeColor);
+
+        rect(xAbs, yAbs, xSize, ySize, currentStyle.cornerRadius);
+    }
+
 }

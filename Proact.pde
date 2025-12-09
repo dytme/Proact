@@ -37,7 +37,7 @@ enum UIState {
 // Class Objects that need to be referenced globally
 
 UITheme DefaultTheme = new DefaultThemeClass();
-UITheme DarkTheme = new DarkThemeClass();
+// UITheme DarkTheme = new DarkThemeClass();
 
 
 // █▀ █▀▀ ▀█▀ █░█ █▀█
@@ -60,6 +60,10 @@ void draw() {
 // █▀█ █▀▀ █▄░█ █▀▄ █▀▀ █▀█   █▀▀ █▄░█ █▀▀ █ █▄░█ █▀▀
 // █▀▄ ██▄ █░▀█ █▄▀ ██▄ █▀▄   ██▄ █░▀█ █▄█ █ █░▀█ ██▄
 
-void renderUI() {
+ArrayList<UIElement> UIElements = new ArrayList<>();
 
+void renderUI() {
+    for (UIElement element : UIElements) {
+        println(element + " : " + element.visible);
+    }
 }
