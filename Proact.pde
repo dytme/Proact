@@ -43,14 +43,27 @@ UITheme DefaultTheme = new DefaultThemeClass();
 // █▀ █▀▀ ▀█▀ █░█ █▀█
 // ▄█ ██▄ ░█░ █▄█ █▀▀
 
+UIRoot proactRoot;
+Frame testFrame;
+Frame testSubsetFrame;
 
 void setup() {
     size(400,400);
+
+    proactRoot = new UIRoot(1, true);
+    proactRoot.setVisible(true);
+    // Frame(Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize)
+    testFrame = new Frame(null, null, 1, 10, 10, 100, 200);
+    testFrame.setVisible(true);
+    testSubsetFrame = new Frame(testFrame, null, 1, 150, 25, 50, 50);
+    testSubsetFrame.setVisible(true);
 }
 
 void draw() {
-    println("tick");
-    delay(1000);
+    
+    background(#FFFFFF);
+    renderUI();
+
 }
 
 
@@ -60,10 +73,19 @@ void draw() {
 // █▀█ █▀▀ █▄░█ █▀▄ █▀▀ █▀█   █▀▀ █▄░█ █▀▀ █ █▄░█ █▀▀
 // █▀▄ ██▄ █░▀█ █▄▀ ██▄ █▀▄   ██▄ █░▀█ █▄█ █ █░▀█ ██▄
 
-ArrayList<UIElement> UIElements = new ArrayList<>();
+ArrayList<UIRoot> UIRoots = new ArrayList<>();
 
 void renderUI() {
-    for (UIElement element : UIElements) {
-        println(element + " : " + element.visible);
+    
+    println("render ui loop");
+
+    for (UIRoot root : UIRoots) {
+        println("suitable root found. giving command");
+        if (root.visible) root.render();
     }
+
+}
+
+void mousePressed() {
+    testFrame.setVisible(!testFrame.visible);
 }

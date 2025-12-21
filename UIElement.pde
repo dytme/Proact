@@ -11,7 +11,7 @@ Building blocks (shared architecture) of all UI elements
 
 */
 
-abstract class UIElement implements Container {
+abstract class UIElement {
 
     // Positioning Fields
     // TODO: Think about implementing Scaling / Offset (like in Roblox, lol)
@@ -34,13 +34,23 @@ abstract class UIElement implements Container {
     // Runnable onHover;
     // Runnable onDrag;
 
+
+    
+    // █▀▀ █▀█ █▄░█ █▀ ▀█▀ █▀█ █░█ █▀▀ ▀█▀ █▀█ █▀█ █▀
+    // █▄▄ █▄█ █░▀█ ▄█ ░█░ █▀▄ █▄█ █▄▄ ░█░ █▄█ █▀▄ ▄█
+
     // 'protected' == Only subclasses (Frames, Buttons, etc.) can use it.
+    // Constructor used by actual UI Elements
     protected UIElement(Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize) {
 
-        // if (parent == null) parent = UIRoot; // TODO: Create a ScreenGUI-esque UI element, an instance of which will be created on set-up and act as the fallback/default when no parent is mentioned.
-        this.parent = parent;
+        if (parent == null) {
+            this.parent = proactRoot;
+        } else this.parent = parent;
 
-        this.theme = theme;
+        if (theme == null) {
+            this.theme = DefaultTheme;
+        } else this.theme = theme;
+
         this.zIndex = zIndex;
 
         this.xPos = xPos;
@@ -50,27 +60,42 @@ abstract class UIElement implements Container {
 
         setPosition(xPos, yPos);
         setZIndex(zIndex);
-            
 
+        this.parent.addChild(this);
+            
     }
 
+    // Constructor used for Roots
+    // Only needs a zIndex (to handle render order) and a visible (active) state.
+    protected UIElement(int zIndex, boolean visible) {
+        this.zIndex = zIndex;
+        this.visible = visible;
+    }
+
+
+
+    // █▀█ █▀▀ █▀▀ █▀▀ █▀█ █▀▀ █▄░█ █▀▀ █▀▀   █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
+    // █▀▄ ██▄ █▀░ ██▄ █▀▄ ██▄ █░▀█ █▄▄ ██▄   █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
+    // Will be overriden by individual elements, but have to be referenced.
+
+    void render(){};
 
 
 
     // █▀▀ █▀▀ ▀█▀ ▀█▀ █▀▀ █▀█ █▀
     // █▄█ ██▄ ░█░ ░█░ ██▄ █▀▄ ▄█
     
-    @Override public float[] getPosition() {
+    public float[] getPosition() {
         float[] parentPosition = { xAbs, yAbs };
         return parentPosition;
     }
 
-    @Override public float[] getSize() {
+    public float[] getSize() {
         float[] parentPosition = { xSize, ySize };
         return parentPosition;
     }
 
-    @Override public int getZIndex() { return zIndexAbs; }
+    public int getZIndex() { return zIndexAbs; }
 
     
     // █▀ █▀▀ ▀█▀ ▀█▀ █▀▀ █▀█ █▀
@@ -95,6 +120,34 @@ abstract class UIElement implements Container {
         float parentPosition[] = parent.getPosition();
         this.xAbs = parentPosition[0] + x;
         this.yAbs = parentPosition[1] + y;
+    }
+
+}
+
+
+// Class<Type> means that the class can be assigned of a specific type later on, most likely UIElement in our case.
+// class ChildManager<Type>
+
+// Helper Class for UIElement that is used by container(s) to handle hierarchy (children) relationships with other elements.
+class ChildManager {
+
+    // All subset elements
+    ArrayList<UIElement> children = new ArrayList<>();
+    
+    void addChild(UIElement child) {
+        if (!children.contains(child)) children.add(child);
+    }
+
+    void removeChild(UIElement child) {
+        children.remove(child);
+    }
+
+    UIElement[] getChildren() {
+        return children.toArray(new UIElement[0]);
+        // toArray(new UIElement[0]) uses the array only as a *type token*.
+        // If the array is too small (0 almost always is), Java allocates a
+        // new UIElement[] of the correct size, copies the elements, and
+        // returns that new array. The 0 does NOT force the result to be empty.
     }
 
 }

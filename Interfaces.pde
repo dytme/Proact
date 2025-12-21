@@ -42,5 +42,9 @@ interface Container {
     float[] getPosition();
     float[] getSize();
     int getZIndex();
+
+    // Expose specific child management methods to potential children
+    void addChild(UIElement child);
+    void removeChild(UIElement child);
 }
 

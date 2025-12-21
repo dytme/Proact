@@ -11,7 +11,14 @@ Basic container(s) that can hold other elements
 
 */
 
-public class Frame extends UIElement implements Hoverable {
+public class Frame extends UIElement implements Container, Hoverable {
+
+    private final ChildManager childManager = new ChildManager();
+    @Override public void addChild(UIElement child) { childManager.addChild(child); }
+    @Override public void removeChild(UIElement child) { childManager.removeChild(child); }
+
+    // All subset elements
+    ArrayList<UIElement> children;
 
     // All of the styles for each possible state of the element
     FrameStyle frameDefault = theme.frame(UIState.DEFAULT);
@@ -26,6 +33,16 @@ public class Frame extends UIElement implements Hoverable {
     }
 
     void render() {
+
+        //TODO: Check if there are any children, and if so, render them as well!!
+
+        // Check if there are any children present, and if so, render them!
+        UIElement[] children = childManager.getChildren();
+        for (UIElement child : children) {
+            if (child.visible) child.render();
+        }
+
+        println("frame rendered");
 
         fill(currentStyle.backgroundColor);
         strokeWeight(currentStyle.strokeWeight);
