@@ -18,10 +18,12 @@ public class UIRoot extends UIElement implements Container  {
     @Override public void addChild(UIElement child) { childManager.addChild(child); }
     @Override public void removeChild(UIElement child) { childManager.removeChild(child); }
 
-    public UIRoot(int zIndex, boolean visible) {
-        super(zIndex, visible);
+    final PApplet applet; // Right now I see no reason as to why this shouldn't be reassignable, but because I don't 100% understand how PApplet works under the hood,
+                                 // I fear that not limiting reassignments might lead to very weird issues which I won't be able to debug.
 
-        println(visible);
+    public UIRoot(PApplet applet, int zIndex, boolean visible) {
+        super(zIndex, visible);
+        this.applet = applet; // Store the 
 
         this.xPos = 0;
         this.yPos = 0;
@@ -30,11 +32,17 @@ public class UIRoot extends UIElement implements Container  {
         this.ySize = height;
 
         UIRoots.add(this);
+
+        println(this.parent);
+    }
+
+    public PApplet getApplet() {
+        return applet;
     }
 
     void render() {
 
-        println("rendering all visible children of root");
+        // println("rendering all visible children of root");
 
         UIElement[] children = childManager.getChildren();
         // TODO: Sort this list by zIndex before proceeding.

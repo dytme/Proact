@@ -1,3 +1,6 @@
+// package proact.ui;
+// TODO: All UI elements could be moved into a proact.ui package, which will contain all individual UI element classes.
+
 /*
 
 ██╗░░░██╗██╗███████╗██╗░░░░░███████╗███╗░░░███╗███████╗███╗░░██╗████████╗
@@ -11,17 +14,20 @@ Building blocks (shared architecture) of all UI elements
 
 */
 
-abstract class UIElement {
+abstract class UIElement implements StateDriven {
 
     // Positioning Fields
     // TODO: Think about implementing Scaling / Offset (like in Roblox, lol)
     float xAbs, yAbs, xPos, yPos;
     float xSize, ySize;
-    float xAnchor, yAnchor;
+    float xAnchor = 0, yAnchor = 0;
 
     // Rendering Fields
     UITheme theme;
     UIState state;
+
+    UIRoot root;
+    PApplet applet;
 
     Container parent;
     int zIndex;
@@ -29,9 +35,10 @@ abstract class UIElement {
     
     boolean visible;
     
-    // Event Fields TODO: Move to individual elements.
-    // Runnable onClick;
-    // Runnable onHover;
+    // Event Fields
+    Runnable onReturn; // Whenever the object returns to it's default state.
+    Runnable onClick;
+    Runnable onHover;
     // Runnable onDrag;
 
 
@@ -46,6 +53,10 @@ abstract class UIElement {
         if (parent == null) {
             this.parent = proactRoot;
         } else this.parent = parent;
+
+        root = this.parent.getRoot(); // Get and store the root of an element. We need this to properly call on the PApplet instance handling a set of UIs, without
+                                      // burdening the user with manually assigning a proper PApplet.
+        this.applet = root.getApplet();                              
 
         if (theme == null) {
             this.theme = DefaultTheme;
@@ -67,6 +78,7 @@ abstract class UIElement {
 
     // Constructor used for Roots
     // Only needs a zIndex (to handle render order) and a visible (active) state.
+    // PApplet is handled directly in the UIRoot constructor.
     protected UIElement(int zIndex, boolean visible) {
         this.zIndex = zIndex;
         this.visible = visible;
@@ -78,7 +90,7 @@ abstract class UIElement {
     // █▀▄ ██▄ █▀░ ██▄ █▀▄ ██▄ █░▀█ █▄▄ ██▄   █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
     // Will be overriden by individual elements, but have to be referenced.
 
-    void render(){};
+    void render() {};
 
 
 
@@ -97,6 +109,23 @@ abstract class UIElement {
 
     public int getZIndex() { return zIndexAbs; }
 
+    public UIState getUIState() { return state; }
+
+    UIRoot getRoot() {
+        // If the parent of an element is null, then that element is a root.
+        // Otherwise, keep repeating the parent check until we reach the point where we have a null parent.
+        if (this.parent == null ) {
+            return (UIRoot) this; 
+            // Casting like this is generally considered unsafe, BUT for our intents and purposes, we're overcoming a limitation of type-safe languages here,
+                                     //     because the only situation where the parent of an object can be null is if that element is actually a UIRoot.
+                                     // UIRoots are always Containers, but because this method is implemented within UIElement, to run from any element, then `this` will be a general
+                                     //     reference from the perspective of Java, obligatory for a UIElement type. Despite this method existing within every single UIElement, this
+                                     //     specific statement should only be ran when the if condition is met-- and that only happens if the element itself happens to be a Container
+                                     //     anyway-- hence, it should be safe.
+                                     // However, this is still risky business. It might throw a weird error sometimes :(
+        } else return this.parent.getRoot();
+    }
+
     
     // █▀ █▀▀ ▀█▀ ▀█▀ █▀▀ █▀█ █▀
     // ▄█ ██▄ ░█░ ░█░ ██▄ █▀▄ ▄█
@@ -107,8 +136,8 @@ abstract class UIElement {
         visible = arg;
     }
 
-    public void setZIndex(int index) {
-        zIndexAbs = parent.getZIndex() + index;
+    public void setZIndex(int ind) {
+        zIndexAbs = parent.getZIndex() + ind;
     }
 
     public void setAbsolute(float x, float y) {
@@ -118,10 +147,33 @@ abstract class UIElement {
 
     public void setPosition(float x, float y) {
         float parentPosition[] = parent.getPosition();
-        this.xAbs = parentPosition[0] + x;
-        this.yAbs = parentPosition[1] + y;
+        this.xAbs = parentPosition[0] + x - (xSize * xAnchor);
+        this.yAbs = parentPosition[1] + y - (ySize * yAnchor);
     }
 
+    public void setAnchorPoints(float x, float y) {
+        xAnchor = x;
+        yAnchor = y;
+        setPosition(xPos, yPos);
+    }
+
+    @Override public void setUIState(UIState state) {
+        this.state = state;
+    }
+
+    public void setEventMethod(UIState state, Runnable method) {
+        switch (state) {
+            case HOVERED:
+                onHover = method;
+                break;
+            case ACTIVATED:
+                onClick = method;
+                break;
+            default:
+                onReturn = method;
+                break;
+        }
+    }
 }
 
 
@@ -136,6 +188,7 @@ class ChildManager {
     
     void addChild(UIElement child) {
         if (!children.contains(child)) children.add(child);
+        children.sort((a, b) -> Integer.compare(a.getZIndex(), b.getZIndex()));
     }
 
     void removeChild(UIElement child) {

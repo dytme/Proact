@@ -1,3 +1,5 @@
+// package proact.themes
+
 /*
 
 ████████╗██╗░░██╗███████╗███╗░░░███╗███████╗░██████╗
@@ -33,7 +35,7 @@ interface UITheme {
 // █▀▄ █▀▀ █▀▀ ▄▀█ █░█ █░░ ▀█▀   ▀█▀ █░█ █▀▀ █▀▄▀█ █▀▀
 // █▄▀ ██▄ █▀░ █▀█ █▄█ █▄▄ ░█░   ░█░ █▀█ ██▄ █░▀░█ ██▄
 
-class DefaultThemeClass implements UITheme {
+public class DefaultThemeClass implements UITheme {
 
     // █▀▀ █▀█ ▄▀█ █▀▄▀█ █▀▀   █▀ ▀█▀ █▄█ █░░ █▀▀ █▀
     // █▀░ █▀▄ █▀█ █░▀░█ ██▄   ▄█ ░█░ ░█░ █▄▄ ██▄ ▄█
@@ -49,6 +51,15 @@ class DefaultThemeClass implements UITheme {
 
     FrameStyle frameHovered = new FrameStyle(
         #999999,
+        0,
+        4,
+        1,
+        #000000,
+        0
+    );
+
+    FrameStyle frameActivated = new FrameStyle(
+        #FFFFFF,
         0,
         4,
         1,
