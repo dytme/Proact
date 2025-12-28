@@ -11,7 +11,9 @@ Basic container(s) that can hold other elements
 
 */
 
-public class Frame extends UIElement implements Container, Hoverable, Clickable {
+/*
+
+public class Template extends UIElement implements Container, Hoverable, Clickable {
 
     // Handle hierarchy with other UI elements as a container
     private final ChildManager childManager = new ChildManager();
@@ -42,6 +44,14 @@ public class Frame extends UIElement implements Container, Hoverable, Clickable 
         Events.sortClickableElementsByZIndex();
     }
 
+    void applyTheme(UITheme theme) {
+        this.theme = theme;
+        
+        frameDefault = theme.frame(UIState.DEFAULT);
+        frameHovered = theme.frame(UIState.HOVERED);
+        frameActivated = theme.frame(UIState.ACTIVATED);
+    }
+
     void render() {
 
         // Update current style based on the currently applied state
@@ -59,16 +69,29 @@ public class Frame extends UIElement implements Container, Hoverable, Clickable 
             }
         }
 
-        // println(state);
-        // println(currentStyle);
-        // println("zIndex for " + this + ": " + getZIndex());
-        
-
         // FIRST AND FOREMOST Render itself (the container)
 
-        applet.fill(currentStyle.backgroundColor);
+        // Combine backgroundColor with backgroundTransparency and then set that as the actual color.
+        applet.fill(color(
+            red(currentStyle.backgroundColor),
+            blue(currentStyle.backgroundColor),
+            green(currentStyle.backgroundColor),
+            map(currentStyle.backgroundTransparency, 0, 1, 255, 0) // We're using map() here instead of a mathematical operation as we need the results to be inverted compared to how Processing usually expects alpha.
+                                                                   // A value of 0 should mean full opacity while a value of 1 should mean full transparency (in our case)
+        ));
+
+        print(currentStyle.backgroundTransparency);
+
         applet.strokeWeight(currentStyle.strokeWeight);
-        applet.stroke(currentStyle.strokeColor);
+
+        // Same principle as above.
+        applet.stroke(color(
+            red(currentStyle.strokeColor),
+            blue(currentStyle.strokeColor),
+            green(currentStyle.strokeColor),
+            map(currentStyle.strokeTransparency, 0, 1, 255, 0)
+        ));
+
 
         applet.rect(xAbs, yAbs, xSize, ySize, currentStyle.cornerRadius);
 
@@ -77,6 +100,9 @@ public class Frame extends UIElement implements Container, Hoverable, Clickable 
         for (UIElement child : children) {
             if (child.visible) child.render();
         }
+
     }
 
 }
+
+*/

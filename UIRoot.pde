@@ -45,7 +45,7 @@ public class UIRoot extends UIElement implements Container  {
         // println("rendering all visible children of root");
 
         UIElement[] children = childManager.getChildren();
-        // TODO: Sort this list by zIndex before proceeding.
+
         for (UIElement child : children) {
             if (child.visible) child.render();
         }

@@ -1,5 +1,5 @@
 // package proact.ui;
-// TODO: All UI elements could be moved into a proact.ui package, which will contain all individual UI element classes.
+// TOD: All UI elements could be moved into a proact.ui package, which will contain all individual UI element classes.
 
 /*
 
@@ -33,7 +33,7 @@ abstract class UIElement implements StateDriven {
     int zIndex;
     int zIndexAbs;
     
-    boolean visible;
+    boolean visible = true; // TODO: Make all elements visible BY DEFAULT
     
     // Event Fields
     Runnable onReturn; // Whenever the object returns to it's default state.
@@ -72,7 +72,8 @@ abstract class UIElement implements StateDriven {
         setPosition(xPos, yPos);
         setZIndex(zIndex);
 
-        this.parent.addChild(this);
+        // Has been moved to individual component.
+        // this.parent.addChild(this);
             
     }
 
@@ -140,12 +141,12 @@ abstract class UIElement implements StateDriven {
         zIndexAbs = parent.getZIndex() + ind;
     }
 
-    public void setAbsolute(float x, float y) {
+    public void setAbsolute(float x, float y) { // Forcefully overwrites the absolute positioning of the element, without accounting for values like AnchorPoints or relative positioning
         xAbs = x;
         yAbs = y;
     }
 
-    public void setPosition(float x, float y) {
+    public void setPosition(float x, float y) { // Takes a new (relative) position and computes & applies a new absolute position referenced to it.
         float parentPosition[] = parent.getPosition();
         this.xAbs = parentPosition[0] + x - (xSize * xAnchor);
         this.yAbs = parentPosition[1] + y - (ySize * yAnchor);
@@ -174,6 +175,11 @@ abstract class UIElement implements StateDriven {
                 break;
         }
     }
+
+    void setTheme(UITheme theme) {
+        this.theme = theme;
+    };
+
 }
 
 

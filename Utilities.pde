@@ -1,13 +1,59 @@
+// package proact.utilities
+
 /*
 
-██╗███╗░░██╗████████╗███████╗██████╗░███████╗░█████╗░░█████╗░███████╗░██████╗
-██║████╗░██║╚══██╔══╝██╔════╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝
-██║██╔██╗██║░░░██║░░░█████╗░░██████╔╝█████╗░░███████║██║░░╚═╝█████╗░░╚█████╗░
-██║██║╚████║░░░██║░░░██╔══╝░░██╔══██╗██╔══╝░░██╔══██║██║░░██╗██╔══╝░░░╚═══██╗
-██║██║░╚███║░░░██║░░░███████╗██║░░██║██║░░░░░██║░░██║╚█████╔╝███████╗██████╔╝
-╚═╝╚═╝░░╚══╝░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚═╝░░░░░╚═╝░░╚═╝░╚════╝░╚══════╝╚═════╝░
+██╗░░░██╗████████╗██╗██╗░░░░░██╗████████╗██╗███████╗░██████╗
+██║░░░██║╚══██╔══╝██║██║░░░░░██║╚══██╔══╝██║██╔════╝██╔════╝
+██║░░░██║░░░██║░░░██║██║░░░░░██║░░░██║░░░██║█████╗░░╚█████╗░
+██║░░░██║░░░██║░░░██║██║░░░░░██║░░░██║░░░██║██╔══╝░░░╚═══██╗
+╚██████╔╝░░░██║░░░██║███████╗██║░░░██║░░░██║███████╗██████╔╝
+░╚═════╝░░░░╚═╝░░░╚═╝╚══════╝╚═╝░░░╚═╝░░░╚═╝╚══════╝╚═════╝░
 
 */
+
+
+
+
+// █▀▀ █▄░█ █░█ █▀▄▀█ █▀
+// ██▄ █░▀█ █▄█ █░▀░█ ▄█
+
+// What states can a UI element have?
+
+enum UIState {
+    DEFAULT,     // Basically Default, but I wanted to avoid confusion with the DefaultTheme
+    HOVERED,    // When a cursor or mouse is on top of the element
+    ACTIVATED,     // When the element is pressed/dragged/actively messed around with
+    DISABLED,   // When interactions are disabled with the element
+}
+
+// What style of font could a label or button use?
+
+enum FontStyle {
+    REGULAR,
+    BOLD,
+    ITALIC
+}
+
+
+
+
+// █░█ █   ▀█▀ █░█ █▀▀ █▀▄▀█ █▀▀ █▀
+// █▄█ █   ░█░ █▀█ ██▄ █░▀░█ ██▄ ▄█
+
+
+// Shared Interface
+// Allows individual elements to request information about any theme
+
+interface UITheme {
+    // Frames & Visual Frames
+    FrameStyle frame(UIState state);
+
+    // Text
+    TextLabelStyle textLabel(UIState state);
+    PFont regularFont();
+    PFont boldFont();
+    PFont italicFont();
+}
 
 
 
@@ -85,3 +131,7 @@ public interface StateDriven {
     UIState getUIState();
     void setUIState(UIState state);
 }
+
+
+
+
