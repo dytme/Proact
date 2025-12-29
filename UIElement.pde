@@ -190,6 +190,7 @@ abstract class UIElement implements StateDriven {
 class ChildManager {
 
     // All subset elements
+    // Only define the ArrayList by default.
     ArrayList<UIElement> children = new ArrayList<>();
     
     void addChild(UIElement child) {

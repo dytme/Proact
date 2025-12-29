@@ -35,7 +35,7 @@ UIRoot proactRoot;
 
 void setup() {
     // OPT: Set Canvas Size
-    size(400,400);
+    size(600,600);
 
     devTestMethod();
 }
@@ -82,6 +82,10 @@ void mouseReleased() {
 ContainerFrame testFrame;
 ContainerFrame testSubsetFrame;
 TextLabel testLabel;
+Button testButton;
+Button testIconButton;
+ImageLabel testImageLabel;
+ImageLabel testImageLabelDest;
 
 void devTestMethod() {
     // Initialize Root
@@ -89,7 +93,7 @@ void devTestMethod() {
     proactRoot.setVisible(true);
 
     testFrame = new ContainerFrame(null, null, 20, 10, 10, 100, 200);
-    testSubsetFrame = new ContainerFrame(testFrame, null, 50, 50, 100, 50, 50);
+    testSubsetFrame = new ContainerFrame(testFrame, null, 5, 50, 100, 50, 50);
     testSubsetFrame.setAnchorPoints(0.5, 0.5);
 
     // TextLabel test
@@ -97,4 +101,32 @@ void devTestMethod() {
     testLabel = new TextLabel(null, null, true, 10, 300, 100, 80, 24);
     testLabel.setContent("Testing!");
     // testLabel.render();
+
+    // Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize
+    // Button test
+    testButton = new Button(testFrame, null, 20, 16, 64, 100, 24);
+    testButton.setContent("Press Me! ;)");
+    testButton.setOnHover(this::hoverwdwTest);
+    testButton.setOnClick(this::test);
+
+    testIconButton = new Button(testFrame, null, 20, 16, 128, 36, 36);
+    testIconButton.setIcon("testicon.png");
+    testIconButton.setOnClick(this::testSearch);
+
+
+    // Image test
+    testImageLabelDest = new ImageLabel(null, null, 1, "rigby.jpeg", 200, 16, 300, 300);
+
+}
+
+void test() {
+    println("sike!!");
+}
+
+void testSearch() {
+    println("searching for the epstein files");
+}
+
+void hoverwdwTest() {
+    println("i know you want it!!");
 }

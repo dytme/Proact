@@ -37,10 +37,20 @@ class VisualFrame extends UIElement {
     FrameStyle currentStyle = frameDefault;
 
 
-
+    // Constructor isn't public because VisualFrame is a Helper Class
                       // Hierarchy       // Style       // Positioning          // Size
-    public VisualFrame(Container parent, UITheme theme, float xPos, float yPos, float xSize, float ySize) {
+    VisualFrame(Container parent, UITheme theme, float xPos, float yPos, float xSize, float ySize) {
         super(parent, theme, 0, xPos, yPos, xSize, ySize);
+    }
+
+    // Constructor that allows you to override the default FrameStyles of the theme.
+    // Used for things like buttons, which still have frames as the backbone of their visual, but utilize different styles compared to the default ones.
+    VisualFrame(Container parent, UITheme theme, FrameStyle frameDefault, FrameStyle frameHovered, FrameStyle frameActivated, FrameStyle frameDisabled, float xPos, float yPos, float xSize, float ySize) {
+        super(parent, theme, 0, xPos, yPos, xSize, ySize);
+        this.frameDefault = frameDefault;
+        this.frameHovered = frameHovered;
+        this.frameActivated = frameActivated;
+        this.frameDisabled = frameDisabled;
     }
 
 
@@ -58,9 +68,7 @@ class VisualFrame extends UIElement {
     // As the VisualFrame is rendered directly from another component
     // This method DOES NOT OVERRIDE the UIElement void render() method.
     void render(UIState renderState) {
-        // println(renderState);
         if (renderState != null) { // Update current style based on the currently applied state
-            println(renderState);
             switch (renderState) {
             case HOVERED:
                 currentStyle = frameHovered;

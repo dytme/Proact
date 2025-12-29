@@ -32,13 +32,14 @@ public class UIRoot extends UIElement implements Container  {
         this.ySize = height;
 
         UIRoots.add(this);
-
-        println(this.parent);
     }
 
     public PApplet getApplet() {
         return applet;
     }
+
+    // TODO: Add a method that goes through all children and applies a new theme to them.
+    // public void setTheme() {}
 
     void render() {
 

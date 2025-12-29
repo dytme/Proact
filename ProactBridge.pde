@@ -25,6 +25,7 @@ void proactDrawLoop() {
     for (Hoverable element : Events.hoverableElements) {
         if (element.isMouseOver(mouseX, mouseY)) {
             if (element.getUIState() == UIState.DEFAULT) element.setUIState(UIState.HOVERED); // Only apply the style if the state of the button is default (other states like ACTIVATED through clicking take priority here)
+            element.mouseHovered(); // Tell the element that it's being hovered.
             return; // Not break, to only stop this method and not the entire draw loop.
         } else element.setUIState(UIState.DEFAULT); // Also added here to facilitate MouseLeave() like behavior.
     }
@@ -45,14 +46,12 @@ void proactDrawLoop() {
 // cx: mouseX // cy: mouseY
 void proactMousePressed(float cx, float cy) {
     for (Clickable element : Events.clickableElements) {
-        if (element.isClicked(cx, cy)) { 
-            println(element + " has been clicked!"); 
+        if (element.isClicked(cx, cy)) {
             element.setUIState(UIState.ACTIVATED);
+            element.mouseClicked(); // Tell the element that it's being clicked.
             return;
         }
     }
-
-    testLabel.setUIState(UIState.DISABLED);
 }
 
 
@@ -61,8 +60,6 @@ void proactMouseReleased() {
     for (Clickable element : Events.clickableElements) {
         if (element.getUIState() == UIState.ACTIVATED) element.setUIState(UIState.DEFAULT);
     }
-
-    testLabel.setUIState(UIState.DEFAULT);
 }
 
 

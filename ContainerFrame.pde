@@ -30,7 +30,7 @@ public class ContainerFrame extends UIElement implements Container {
         // Create a Visual Frame element that will act as the 'visible' part of the frame.
         //      xPos and yPos = 0 because positioning is relative. We want our visualFrame to cover the entire area of our actual element.
         //      As such, we need it's position to be 0,0 and it's size to be equal to that of the actual element.
-        visualFrame = new VisualFrame(this, theme, 0, 0, xSize, ySize);
+        visualFrame = new VisualFrame(this, this.theme, 0, 0, xSize, ySize);
 
         // Explicitly mention that this is to be considered a 'child' of it's parent, and not a building block of the parent itself.
         this.parent.addChild(this);

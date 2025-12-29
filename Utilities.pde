@@ -53,6 +53,9 @@ interface UITheme {
     PFont regularFont();
     PFont boldFont();
     PFont italicFont();
+
+    // Buttons
+    FrameStyle button(UIState state);
 }
 
 
@@ -85,14 +88,23 @@ public static class Events {
 
 // Depends on Hoverable, as in order to check if pressing the mouse implies something gets pressed, you need to know if the mouse is hovering on top of something.
 // TODO: Move these in their own individual files.
-public interface Clickable extends StateDriven, Container, Hoverable {
+public interface Clickable extends StateDriven, Hoverable {
     default boolean isClicked(float cx, float cy) {
         return isMouseOver(cx, cy);
     }
+
+    void setOnClick(Runnable method);
+    void mouseClicked();
 }
 
-public interface Hoverable extends StateDriven, Container {
+public interface Hoverable extends StateDriven {
 
+    // All Hoverable objects will inherit these methods from UIElement. All we're doing is referencing them.
+    float[] getPosition();
+    float[] getSize();
+    int getZIndex();
+
+    // Checks if the mouse is hovering on top of an UIElement
     default boolean isMouseOver(float cx, float cy) {
         float[] absPos = this.getPosition();
         float[] size = this.getSize();
@@ -103,6 +115,10 @@ public interface Hoverable extends StateDriven, Container {
             return true;
         } else return false;
     }
+
+    // Transfer the Runnable method to the button, to be triggered whenever the button is hovered.
+    void setOnHover(Runnable method);
+    void mouseHovered();
 
 }
 

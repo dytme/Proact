@@ -13,6 +13,8 @@
 
 public class DefaultThemeClass implements UITheme {
 
+
+
     // █▀▀ █▀█ ▄▀█ █▀▄▀█ █▀▀   █▀ ▀█▀ █▄█ █░░ █▀▀ █▀
     // █▀░ █▀▄ █▀█ █░▀░█ ██▄   ▄█ ░█░ ░█░ █▄▄ ██▄ ▄█
 
@@ -46,17 +48,10 @@ public class DefaultThemeClass implements UITheme {
         1
     );
 
-    public final FrameStyle frameDisabled = new FrameStyle(
-        #de34eb,
-        0,
-        4,
-
-        #000000,
-        0,
-        1
-    );
+    public final FrameStyle frameDisabled = frameDefault;
 
     
+
     // ▀█▀ █▀▀ ▀▄▀ ▀█▀ █░░ ▄▀█ █▄▄ █▀▀ █░░   █▀ ▀█▀ █▄█ █░░ █▀▀ █▀
     // ░█░ ██▄ █░█ ░█░ █▄▄ █▀█ █▄█ ██▄ █▄▄   ▄█ ░█░ ░█░ █▄▄ ██▄ ▄█
 
@@ -82,14 +77,50 @@ public class DefaultThemeClass implements UITheme {
     );
 
 
+
     // █▄▄ █░█ ▀█▀ ▀█▀ █▀█ █▄░█   █▀ ▀█▀ █▄█ █░░ █▀▀ █▀
     // █▄█ █▄█ ░█░ ░█░ █▄█ █░▀█   ▄█ ░█░ ░█░ █▄▄ ██▄ ▄█
 
+    // color backgroundColor, float backgroundTransparency, int cornerRadius, color strokeColor, float strokeTransparency, float strokeWeight
+    public final FrameStyle buttonDefault = new FrameStyle(
+        #FFFFFF,
+        0,
+        4,
+
+        #FFFFFF,
+        1,
+        0
+    );
+
+    public final FrameStyle buttonHovered = new FrameStyle(
+        #D9D9D9,
+        0,
+        4,
+
+        #FFFFFF,
+        0,
+        1
+    );
+
+    public final FrameStyle buttonActivated = new FrameStyle(
+        #999999,
+        0,
+        4,
+
+        #999999,
+        1,
+        0
+    );
+
+    public final FrameStyle buttonDisabled = buttonActivated; // buttonDisabled and buttonActive look the same. Difference will be visible through the actual TextLabel
 
 
-    // █▀█ █▀▀ ▀█▀ █░█ █▀█ █▄░█   █▀ ▀█▀ █▄█ █░░ █▀▀ █▀
-    // █▀▄ ██▄ ░█░ █▄█ █▀▄ █░▀█   ▄█ ░█░ ░█░ █▄▄ ██▄ ▄█
 
+
+    // ▒█▀▀█ ▒█▀▀▀ ▀▀█▀▀ ▒█░▒█ ▒█▀▀█ ▒█▄░▒█ 　 ▒█▀▀▀█ ▀▀█▀▀ ▒█░░▒█ ▒█░░░ ▒█▀▀▀ ▒█▀▀▀█ 
+    // ▒█▄▄▀ ▒█▀▀▀ ░▒█░░ ▒█░▒█ ▒█▄▄▀ ▒█▒█▒█ 　 ░▀▀▀▄▄ ░▒█░░ ▒█▄▄▄█ ▒█░░░ ▒█▀▀▀ ░▀▀▀▄▄ 
+    // ▒█░▒█ ▒█▄▄▄ ░▒█░░ ░▀▄▄▀ ▒█░▒█ ▒█░░▀█ 　 ▒█▄▄▄█ ░▒█░░ ░░▒█░░ ▒█▄▄█ ▒█▄▄▄ ▒█▄▄▄█
+    
     public final FrameStyle frame(UIState state) { 
         switch (state) {
             case HOVERED: return frameHovered;
@@ -103,6 +134,15 @@ public class DefaultThemeClass implements UITheme {
         switch (state) {
             case DISABLED: return textLabelDisabled;
             default: return textLabelDefault;
+        }
+    }
+
+    public final FrameStyle button(UIState state) { 
+        switch (state) {
+            case HOVERED: return buttonHovered;
+            case ACTIVATED: return buttonActivated;
+            case DISABLED: return buttonDisabled;
+            default: return buttonDefault;
         }
     }
 
