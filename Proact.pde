@@ -15,19 +15,7 @@ Version 2.0 Alpha
 
 
 
-// █▀ ▀█▀ ▄▀█ ▀█▀ █▀▀   █▀▀ █▄░█ █░█ █▀▄▀█ █▀
-// ▄█ ░█░ █▀█ ░█░ ██▄   ██▄ █░▀█ █▄█ █░▀░█ ▄█
-
-// What states can a UI element have?
-
-enum UIState {
-    DEFAULT,     // Basically Default, but I wanted to avoid confusion with the DefaultTheme
-    HOVERED,    // When a cursor or mouse is on top of the element
-    ACTIVE,     // When the element is pressed/dragged/actively messed around with
-    DISABLED,   // When interactions are disabled with the element
-}
-
-
+import processing.core.PApplet;
 
 
 
@@ -43,27 +31,102 @@ UITheme DefaultTheme = new DefaultThemeClass();
 // █▀ █▀▀ ▀█▀ █░█ █▀█
 // ▄█ ██▄ ░█░ █▄█ █▀▀
 
+UIRoot proactRoot;
 
 void setup() {
-    size(400,400);
+    // OPT: Set Canvas Size
+    size(600,600);
+
+    devTestMethod();
 }
 
 void draw() {
-    println("tick");
-    delay(1000);
+    
+    background(#FFBB00);
+    proactDrawLoop();
+
+    // delay(500);
+
 }
 
 
 
 
 
-// █▀█ █▀▀ █▄░█ █▀▄ █▀▀ █▀█   █▀▀ █▄░█ █▀▀ █ █▄░█ █▀▀
-// █▀▄ ██▄ █░▀█ █▄▀ ██▄ █▀▄   ██▄ █░▀█ █▄█ █ █░▀█ ██▄
 
-ArrayList<UIElement> UIElements = new ArrayList<>();
 
-void renderUI() {
-    for (UIElement element : UIElements) {
-        println(element + " : " + element.visible);
-    }
+
+
+
+
+
+// █▀▀ █░█ █▀▀ █▄░█ ▀█▀   █░█ ▄▀█ █▄░█ █▀▄ █░░ █▀▀ █▀█   █▀▀ █▀█ █▄░█ █▄░█ █▀▀ █▀▀ ▀█▀ █ █▀█ █▄░█ █▀
+// ██▄ ▀▄▀ ██▄ █░▀█ ░█░   █▀█ █▀█ █░▀█ █▄▀ █▄▄ ██▄ █▀▄   █▄▄ █▄█ █░▀█ █░▀█ ██▄ █▄▄ ░█░ █ █▄█ █░▀█ ▄█
+
+void mousePressed() {
+    proactMousePressed(mouseX, mouseY);
+}
+
+
+void mouseReleased() {
+    proactMouseReleased();
+}
+
+
+
+// THIS IS FOR ME TO MESS AROUND WITH CREATING ELEMENTS
+// CAN BE SAFELY IGNORED FROM SET-UP PROCEDURE.
+
+// Realistically speaking, if you see this then it means I probably pushed my dev branch to main without checking everything, oops.
+
+ContainerFrame testFrame;
+ContainerFrame testSubsetFrame;
+TextLabel testLabel;
+Button testButton;
+Button testIconButton;
+ImageLabel testImageLabel;
+ImageLabel testImageLabelDest;
+
+void devTestMethod() {
+    // Initialize Root
+    proactRoot = new UIRoot(this, 1, true);
+    proactRoot.setVisible(true);
+
+    testFrame = new ContainerFrame(null, null, 20, 10, 10, 100, 200);
+    testSubsetFrame = new ContainerFrame(testFrame, null, 5, 50, 100, 50, 50);
+    testSubsetFrame.setAnchorPoints(0.5, 0.5);
+
+    // TextLabel test
+    // public TextLabel(Container parent, UITheme theme, boolean hasVisualFrame, int zIndex, float xPos, float yPos, float xSize, float ySize)
+    testLabel = new TextLabel(null, null, true, 10, 300, 100, 80, 24);
+    testLabel.setContent("Testing!");
+    // testLabel.render();
+
+    // Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize
+    // Button test
+    testButton = new Button(testFrame, null, 20, 16, 64, 100, 24);
+    testButton.setContent("Press Me! ;)");
+    testButton.setOnHover(this::hoverwdwTest);
+    testButton.setOnClick(this::test);
+
+    testIconButton = new Button(testFrame, null, 20, 16, 128, 36, 36);
+    testIconButton.setIcon("testicon.png");
+    testIconButton.setOnClick(this::testSearch);
+
+
+    // Image test
+    testImageLabelDest = new ImageLabel(null, null, 1, "rigby.jpeg", 200, 16, 300, 300);
+
+}
+
+void test() {
+    println("sike!!");
+}
+
+void testSearch() {
+    println("searching for the epstein files");
+}
+
+void hoverwdwTest() {
+    println("i know you want it!!");
 }
