@@ -24,8 +24,8 @@ public class ContainerFrame extends UIElement implements Container {
     VisualFrame visualFrame;
 
          // Hierarchy       // Style       // Render   // Positioning        // Size
-    public ContainerFrame(Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
+    public ContainerFrame(Container parent, UITheme theme) {
+        super(parent, theme, 0, 0, 0, 100, 100);
 
         // Create a Visual Frame element that will act as the 'visible' part of the frame.
         //      xPos and yPos = 0 because positioning is relative. We want our visualFrame to cover the entire area of our actual element.
@@ -36,16 +36,22 @@ public class ContainerFrame extends UIElement implements Container {
         this.parent.addChild(this);
     }
 
-    @Override void setTheme(UITheme theme) {
+
+    // Setters
+    @Override public void setTheme(UITheme theme) {
         super.setTheme(theme);
         visualFrame.setTheme(theme);
     }
 
+
+    // Rendering
     @Override void render() {
 
         // Communicate the current state of the ContainerFrame to the VisualFrame and render it accordingly.
-        visualFrame.setAnchorPoints(xAnchor,yAnchor);
-        visualFrame.setAbsolute(xAbs,yAbs);
+        visualFrame.setAnchorPoints(xAnchor, yAnchor);
+        visualFrame.setAbsolute(xAbs, yAbs);
+        visualFrame.setSize(xSize, ySize);
+
         visualFrame.setUIState(this.state);
         visualFrame.render();
 

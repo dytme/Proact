@@ -29,6 +29,10 @@ public class ImageLabel extends UIElement {
         this.destination = dest;
         this.img = loadImage(dest);
 
+        if (img == null) {
+            throw new IllegalArgumentException("Image parented to " + parent + " could not be constructed.");
+        }
+
         this.parent.addChild(this);
     }
 

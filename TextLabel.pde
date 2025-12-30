@@ -67,7 +67,7 @@ public class TextLabel extends UIElement {
 
     public void setTextSize(float s) { this.textSize = s; }
 
-    @Override void setTheme(UITheme theme) {
+    @Override public void setTheme(UITheme theme) {
         super.setTheme(theme);
         if (hasVisualFrame) visualFrame.setTheme(theme);
     }

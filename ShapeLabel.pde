@@ -47,8 +47,11 @@ public class ShapeLabel extends UIElement {
         this.destination = dest;
         this.shape = loadShape(dest);
 
+        if (shape == null) {
+            throw new IllegalArgumentException("Shape parented to " + parent + " could not be constructed.");
+        }
+
         this.useStateDrivenStyling = useStateDrivenStyling;
-        println("created shape");
 
         this.parent.addChild(this);
     }
@@ -56,7 +59,7 @@ public class ShapeLabel extends UIElement {
 
 
     // Set the object's theme.
-    @Override void setTheme(UITheme theme) {
+    @Override public void setTheme(UITheme theme) {
         super.setTheme(theme);
 
         shapeLabelDefault = theme.shapeLabel(UIState.DEFAULT);
@@ -76,7 +79,7 @@ public class ShapeLabel extends UIElement {
 
     void render() {
 
-        println("drawing shape");
+        if (shape == null) throw new IllegalArgumentException("Shape " + shape + " has not been constructed properly and is trying to render.");
 
         // If the shape is using state-driven styling, then update all of the visual properties of the applet
         if (useStateDrivenStyling) {

@@ -52,7 +52,7 @@ class VisualFrame extends UIElement {
 
 
 
-    @Override void setTheme(UITheme theme) {
+    @Override public void setTheme(UITheme theme) {
         super.setTheme(theme);
 
         frameDefault = theme.frame(UIState.DEFAULT);
