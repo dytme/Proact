@@ -46,7 +46,8 @@ public class ContainerFrame extends UIElement implements Container {
         // Communicate the current state of the ContainerFrame to the VisualFrame and render it accordingly.
         visualFrame.setAnchorPoints(xAnchor,yAnchor);
         visualFrame.setAbsolute(xAbs,yAbs);
-        visualFrame.render(state);
+        visualFrame.setUIState(this.state);
+        visualFrame.render();
 
         // THEN Check if there are any children present, and if so, render them!
         UIElement[] children = childManager.getChildren();

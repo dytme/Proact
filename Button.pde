@@ -129,18 +129,18 @@ public class Button extends UIElement implements Container, Hoverable, Clickable
         // Communicate the current state of the Button to the VisualFrame and TextLabel and render them accordingly.
         visualFrame.setAnchorPoints(xAnchor,yAnchor);
         visualFrame.setAbsolute(xAbs,yAbs);
-        //visualFrame.setUIState(state);
-        visualFrame.render(state);
+        visualFrame.setUIState(this.state);
+        visualFrame.render();
 
         if (textLabel != null) {
             textLabel.setAnchorPoints(xAnchor,yAnchor);
             textLabel.setAbsolute(xAbs,yAbs);
-            textLabel.setUIState(state);
+            textLabel.setUIState(this.state);
             textLabel.render();
         }
 
         if (icon != null) {
-            icon.setUIState(state); // Right now unused, but I don't want to worry about forgetting to implement this in the chain later down the line if I do implement states for ImageLabels.
+            icon.setUIState(this.state); // Right now unused, but I don't want to worry about forgetting to implement this in the chain later down the line if I do implement states for ImageLabels.
             icon.setAnchorPoints(0.5, 0.5);
             icon.setPosition(xSize/2,ySize/2);
             icon.render();

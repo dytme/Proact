@@ -15,11 +15,8 @@ Basic visual element. A frame that cannot contain actual elements, but is used a
 VisualFrame (and possibly other such elements in the future) are 'helper' classes.
     They act as shared building blocks between elements (a "visual frame") that can be utilized by actual container frames, labels, buttons, etc.
 
-    NOTE: VisualFrame DOES NOT utilize it's own state field given from UIElement.
-    The alternative of either moving all state logic from UIElement to individual elements OR implementing separate positioning mechanics to VisualFrame was not worth it.
-
     NOTE: VisualFrame is rendered separately from the standard render loop (based on children).
-    Hence, it doesn't have a zIndex either.
+    Hence, it doesn't have a zIndex.
 
 */
 
@@ -61,15 +58,16 @@ class VisualFrame extends UIElement {
         frameDefault = theme.frame(UIState.DEFAULT);
         frameHovered = theme.frame(UIState.HOVERED);
         frameActivated = theme.frame(UIState.ACTIVATED);
+        frameDisabled = theme.frame(UIState.DISABLED);
     }
 
 
 
     // As the VisualFrame is rendered directly from another component
     // This method DOES NOT OVERRIDE the UIElement void render() method.
-    void render(UIState renderState) {
-        if (renderState != null) { // Update current style based on the currently applied state
-            switch (renderState) {
+    void render() {
+        if (this.state != null) { // Update current style based on the currently applied state
+            switch (this.state) {
             case HOVERED:
                 currentStyle = frameHovered;
                 break;

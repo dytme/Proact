@@ -56,6 +56,15 @@ interface UITheme {
 
     // Buttons
     FrameStyle button(UIState state);
+
+    // ShapeLabel
+    ShapeLabelStyle shapeLabel(UIState state);
+
+    // // Icons
+    // color defaultIconColor();
+    // color hoveredIconColor();
+    // color activatedIconColor();
+    // color disabledIconColor();
 }
 
 
@@ -68,6 +77,11 @@ interface UITheme {
 //      static -- means that it's more akin to the classes in Themes, as in it acts as data storage rather than a template for objects to piggyback off of.
 //      public -- (in the future) can be accessed by other packages (mostly Proact.UI)
 public static class Events {
+
+    // Global states for focused and hovered elements. These get updated with the latest UIElement which has been clicked or hovered.
+    public static UIElement focusedElement;
+    public static UIElement hoveredElement;
+
 
     // This has a bit of boilerplate, but the alternative for Java to having a generic method that could sort these individually is more complex than simply having a few of these methods in parallel.
     public static final ArrayList<Clickable> clickableElements = new ArrayList<>();
@@ -119,6 +133,10 @@ public interface Hoverable extends StateDriven {
     // Transfer the Runnable method to the button, to be triggered whenever the button is hovered.
     void setOnHover(Runnable method);
     void mouseHovered();
+
+}
+
+public interface Draggable {
 
 }
 

@@ -86,6 +86,7 @@ Button testButton;
 Button testIconButton;
 ImageLabel testImageLabel;
 ImageLabel testImageLabelDest;
+ShapeLabel testShapeLabel;
 
 void devTestMethod() {
     // Initialize Root
@@ -117,6 +118,10 @@ void devTestMethod() {
     // Image test
     testImageLabelDest = new ImageLabel(null, null, 1, "rigby.jpeg", 200, 16, 300, 300);
 
+
+    // Shape test
+    testShapeLabel = new ShapeLabel(null, null, 100, "clock.svg", true, 10, 10, 120, 120);
+
 }
 
 void test() {
@@ -128,5 +133,5 @@ void testSearch() {
 }
 
 void hoverwdwTest() {
-    println("i know you want it!!");
+    // println("i know you want it!!");
 }

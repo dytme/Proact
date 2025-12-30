@@ -113,7 +113,8 @@ public class TextLabel extends UIElement {
         if (hasVisualFrame) {
             visualFrame.setAnchorPoints(xAnchor,yAnchor);
             visualFrame.setAbsolute(xAbs,yAbs);
-            visualFrame.render(state);
+            visualFrame.setUIState(this.state);
+            visualFrame.render();
         }
 
         

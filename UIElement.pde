@@ -145,6 +145,8 @@ abstract class UIElement implements StateDriven {
         xAbs = x;
         yAbs = y;
     }
+    
+    // TODO: Move setPosition logic in an internal helper and add a setter to simply change xPos and yPos + one that also calls on the new helper
 
     public void setPosition(float x, float y) { // Takes a new (relative) position and computes & applies a new absolute position referenced to it.
         float parentPosition[] = parent.getPosition();

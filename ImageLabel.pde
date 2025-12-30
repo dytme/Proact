@@ -15,7 +15,7 @@ Basically a PImage but with relative positioning and zIndex support.
 
 public class ImageLabel extends UIElement {
     String destination;
-    PImage img; // TODO: Check if it's possible to use SVGs? If so, can you change the color of them with something like fill?
+    PImage img;
 
     ImageLabel(Container parent, UITheme theme, int zIndex, PImage img, float xPos, float yPos, float xSize, float ySize) {
         super(parent, theme, zIndex, xPos, yPos, xSize, ySize);

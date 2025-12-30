@@ -60,6 +60,7 @@ public class DefaultThemeClass implements UITheme {
     public final PFont italicFont = null;
 
     // Because we're utilizing an interface here to allow any sort of theme to be applied, we can't simply extract variables like regularTextFont with a direct reference. We need a getter.
+    // Even still, we're keeping the other values as public in case the user wants to easily access these by referencing this specific theme at some point.
     @Override public PFont regularFont() { return regularFont; }
     @Override public PFont boldFont() { return boldFont; }
     @Override public PFont italicFont() { return italicFont; }
@@ -115,6 +116,38 @@ public class DefaultThemeClass implements UITheme {
     public final FrameStyle buttonDisabled = buttonActivated; // buttonDisabled and buttonActive look the same. Difference will be visible through the actual TextLabel
 
 
+    
+
+    // █▀ █░█ ▄▀█ █▀█ █▀▀ █░░ ▄▀█ █▄▄ █▀▀ █░░   █▀ ▀█▀ █▄█ █░░ █▀▀
+    // ▄█ █▀█ █▀█ █▀▀ ██▄ █▄▄ █▀█ █▄█ ██▄ █▄▄   ▄█ ░█░ ░█░ █▄▄ ██▄
+
+    public final ShapeLabelStyle shapeLabelDefault = new ShapeLabelStyle(
+        true,
+        #444444,
+
+        0.5,
+        #FFFFFF
+    );
+
+    public final ShapeLabelStyle shapeLabelHovered = new ShapeLabelStyle(
+        true,
+        #222222,
+
+        0.5,
+        #FFFFFF
+    );
+
+    public final ShapeLabelStyle shapeLabelActivated = new ShapeLabelStyle(
+        true,
+        #000000,
+
+        0.5,
+        #FFFFFF
+    );
+
+    public final ShapeLabelStyle shapeLabelDisabled = shapeLabelActivated;  // By default, identical to the activated one
+
+
 
 
     // ▒█▀▀█ ▒█▀▀▀ ▀▀█▀▀ ▒█░▒█ ▒█▀▀█ ▒█▄░▒█ 　 ▒█▀▀▀█ ▀▀█▀▀ ▒█░░▒█ ▒█░░░ ▒█▀▀▀ ▒█▀▀▀█ 
@@ -143,6 +176,15 @@ public class DefaultThemeClass implements UITheme {
             case ACTIVATED: return buttonActivated;
             case DISABLED: return buttonDisabled;
             default: return buttonDefault;
+        }
+    }
+
+    public final ShapeLabelStyle shapeLabel(UIState state) { 
+        switch (state) {
+            case HOVERED: return shapeLabelHovered;
+            case ACTIVATED: return shapeLabelActivated;
+            case DISABLED: return shapeLabelDisabled;
+            default: return shapeLabelDefault;
         }
     }
 
