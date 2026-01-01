@@ -19,12 +19,16 @@ public class TextLabel extends UIElement {
     int horizontalAllignment = CENTER;
     int verticalAllignment = CENTER;
 
-    float textSize = 16;
+    float textSize = -1; // -1 (or any negative number) implies that the field has not been overwritten by the user.
+                         // If you want the label to use it's style's size, you can manually set this to something negative.
     String content = "TextLabel";
     
     // TextLabel Styles
-    TextLabelStyle textLabelDefault = theme.textLabel(UIState.DEFAULT);
-    TextLabelStyle textLabelDisabled = theme.textLabel(UIState.DISABLED);
+    TextLabelStyle textLabelDefault;
+    TextLabelStyle textLabelHovered;
+    TextLabelStyle textLabelActivated;
+    TextLabelStyle textLabelDisabled;
+
     TextLabelStyle currentStyle = textLabelDefault;
 
     // Font Styles
@@ -43,15 +47,25 @@ public class TextLabel extends UIElement {
     // █▀▀ █▀█ █▄░█ █▀ ▀█▀ █▀█ █░█ █▀▀ ▀█▀ █▀█ █▀█
     // █▄▄ █▄█ █░▀█ ▄█ ░█░ █▀▄ █▄█ █▄▄ ░█░ █▄█ █▀▄
 
-                     // Hierarchy      // Style       // Render                           // Positioning          // Size
-    public TextLabel(Container parent, UITheme theme, boolean hasVisualFrame, int zIndex, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
+                     // Hierarchy      // Style       // Render
+    public TextLabel(Container parent, UITheme theme, TextLabelStyle[] stylePack, boolean hasVisualFrame) {
+        super(parent, theme, 1, 0, 0, 100, 50);
 
         // Only create a visualFrame element if the TextLabel has one.
         this.hasVisualFrame = hasVisualFrame;
         if (hasVisualFrame) {
-            visualFrame = new VisualFrame(parent, theme, 0, 0, xSize, ySize);
+
+            FrameStyle[] visualFrameStylePack; // Temporarily assign this variable
+
+            if (stylePack == null) visualFrameStylePack = null; // if no style pack has been provided, give no style pack to visualFrame too.
+            else visualFrameStylePack = stylePack[0].visualFrameStylePack; // Get the visualFrameStylePack from the default TextLabel style.
+
+            visualFrame = new VisualFrame(parent, theme, visualFrameStylePack, 0, 0, xSize, ySize); // Parse that to the visualFrame element.
+
         }
+
+        if (stylePack != null) updateStylePack(stylePack);
+        else updateStylePack();
 
         // Explicitly mention that this is to be considered a 'child' of it's parent, and not a building block of the parent itself.
         // println("my parent is: " + parent);
@@ -63,14 +77,39 @@ public class TextLabel extends UIElement {
     // █▀ █▀▀ ▀█▀ ▀█▀ █▀▀ █▀█ █▀
     // ▄█ ██▄ ░█░ ░█░ ██▄ █▀▄ ▄█
 
+    // Update the new styles after the theme of the element changes.
+    void updateStylePack() {
+        this.textLabelDefault = theme.textLabel(UIState.DEFAULT);
+        this.textLabelHovered = theme.textLabel(UIState.HOVERED);
+        this.textLabelActivated = theme.textLabel(UIState.ACTIVATED);
+        this.textLabelDisabled = theme.textLabel(UIState.DISABLED);
+
+        this.currentStyle = textLabelDefault;
+    }
+
+    // Apply a new style pack to the element.
+    void updateStylePack(TextLabelStyle[] newStyles) {
+
+        // We don't have to worry that much about missing styles.
+        //  If a style is missing for a specific state, then it simply won't update from the previous, valid style.
+        //  If no custom styles have been applied yet, then those are just the default ones.
+        if (newStyles[0] != null) textLabelDefault = newStyles[0];
+        if (newStyles[1] != null) textLabelHovered = newStyles[1];
+        if (newStyles[2] != null) textLabelActivated = newStyles[2];
+        if (newStyles[3] != null) textLabelDisabled = newStyles[3];
+    }
+
+    @Override public void setTheme(UITheme theme) {
+        super.setTheme(theme);
+        if (hasVisualFrame) visualFrame.setTheme(theme);
+        updateStylePack();
+    }
+
+
     public void setContent(String s) { this.content = s; }
 
     public void setTextSize(float s) { this.textSize = s; }
 
-    @Override void setTheme(UITheme theme) {
-        super.setTheme(theme);
-        if (hasVisualFrame) visualFrame.setTheme(theme);
-    }
 
     void setFontStyle(FontStyle fontStyle) {
         if (fontStyle != null) { // Update current style based on the currently applied state
@@ -96,10 +135,17 @@ public class TextLabel extends UIElement {
     @Override void render() {
 
         // print("rendered! through papplet instance: " + applet);
+        // print(this + " has state: " + this.state);
 
         // Update the current visual style based on the state.
         if (state != null) { // Update current style based on the currently applied state
             switch (state) {
+            case HOVERED:
+                currentStyle = textLabelHovered;
+                break;
+            case ACTIVATED:
+                currentStyle = textLabelActivated;
+                break;
             case DISABLED:
                 currentStyle = textLabelDisabled;
                 break;
@@ -109,11 +155,14 @@ public class TextLabel extends UIElement {
             }
         }
 
+        println("Current style: " + currentStyle);
+
         // Communicate the current state of the ContainerFrame to the VisualFrame and render it accordingly.
         if (hasVisualFrame) {
             visualFrame.setAnchorPoints(xAnchor,yAnchor);
             visualFrame.setAbsolute(xAbs,yAbs);
-            visualFrame.render(state);
+            visualFrame.setUIState(this.state);
+            visualFrame.render();
         }
 
         
@@ -128,7 +177,11 @@ public class TextLabel extends UIElement {
             map(currentStyle.textTransparency, 0, 1, 255, 0)
         ));
 
-        applet.textSize(textSize);
+        // if the textSize property is not null, then it means the property was overwritten.
+        // otherwise, use the default one given by the currentStyle.
+        if (this.textSize < 0) applet.textSize(currentStyle.textSize);
+        else applet.textSize(this.textSize);
+
         applet.textAlign(horizontalAllignment, verticalAllignment);
         applet.text(content, xAbs, yAbs, xSize, ySize);
         // applet.text(content, 300, 200);

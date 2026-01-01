@@ -16,10 +16,17 @@ Interactable element that can run methods when hovered on pressed, while also su
 // TODO: Replace the current "Helper" button with this method. Rename it to something more abstract like "Button"
 public class Button extends UIElement implements Container, Hoverable, Clickable {
 
-    // Visual Frame element
+    // Logic Fields
+    boolean toggleable;
+    boolean pressed;
+
+    // Array for all Visual Elements
+    ArrayList<UIElement> subsetElements = new ArrayList<>();
+
+    // Individual Visual Elements
     VisualFrame visualFrame;
     TextLabel textLabel;
-    ImageLabel icon; // TODO: Check how these icons behave with .svg files instead of normal image files.
+    ShapeLabel icon;
 
     // Handle hierarchy with other UI elements as a container
     private final ChildManager childManager = new ChildManager();
@@ -35,18 +42,19 @@ public class Button extends UIElement implements Container, Hoverable, Clickable
     // █▀▀ █▀█ █▄░█ █▀ ▀█▀ █▀█ █░█ █▀▀ ▀█▀ █▀█ █▀█
     // █▄▄ █▄█ █░▀█ ▄█ ░█░ █▀▄ █▄█ █▄▄ ░█░ █▄█ █▀▄
 
-         // Hierarchy       // Style       // Render   // Positioning        // Size
-    public Button(Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
+
+    public Button(Container parent, UITheme theme, FrameStyle[] stylePack, boolean toggleable) {
+        super(parent, theme, 0, 0, 0, 100, 50);
+
+        this.toggleable = toggleable;
 
         // Create a Visual Frame element that will act as the 'visible' part of the button
         visualFrame = new VisualFrame(
             parent, theme, 
-            this.theme.button(UIState.DEFAULT), 
-            this.theme.button(UIState.HOVERED), 
-            this.theme.button(UIState.ACTIVATED), 
-            this.theme.button(UIState.DISABLED), 
-            0.0, 0.0, xSize, ySize);
+            stylePack,
+            0.0, 0.0, xSize, ySize
+        );
+        subsetElements.add(visualFrame); // Link the VisualFrame of the button with the rest of the subset visual elements.
 
         // Create a TextLabel that will handle the actual text
         // Container parent, UITheme theme, boolean hasVisualFrame, int zIndex, float xPos, float yPos, float xSize, float ySize
@@ -61,18 +69,40 @@ public class Button extends UIElement implements Container, Hoverable, Clickable
         Events.clickableElements.add(this);
     }
 
-    void constructTextLabel() { textLabel = new TextLabel(this, this.theme, false, 1, 0, 0, xSize, ySize); }
-    void constructIcon(String dest) { icon = new ImageLabel(this, this.theme, 1, dest, 0, 0, ySize*0.62, ySize*0.62); }
-    void constructIcon(PImage img) { icon = new ImageLabel(this, this.theme, 1, img, 0, 0, ySize*0.62, ySize*0.62); }
+    void constructTextLabel() { 
+        textLabel = new TextLabel(this, this.theme, null, false);
+        textLabel.setSize(xSize, ySize);
+        subsetElements.add(textLabel); 
+    }
+
+    void constructIcon(String dest) { 
+        icon = new ShapeLabel(this, this.theme, dest, true);
+        computeIconSize();
+        subsetElements.add(icon);
+    }
+
+    void constructIcon(PShape shape) { 
+        icon = new ShapeLabel(this, this.theme, shape, true); 
+        computeIconSize();
+        subsetElements.add(icon);
+    }
 
 
 
     // █▀ █▀▀ ▀█▀ ▀█▀ █▀▀ █▀█ █▀
     // ▄█ ██▄ ░█░ ░█░ ██▄ █▀▄ ▄█
 
-    @Override void setTheme(UITheme theme) {
+    public void setSwitchState(boolean forced) {
+        this.pressed = forced;
+    }
+
+    @Override public void setTheme(UITheme theme) {
         super.setTheme(theme);
         visualFrame.setTheme(theme);
+    }
+
+    public void updateStylePack(FrameStyle[] stylePack) {
+        visualFrame.updateStylePack(stylePack);
     }
 
     // Set new Runnables to be triggered onClick or onHover
@@ -81,30 +111,48 @@ public class Button extends UIElement implements Container, Hoverable, Clickable
 
     // TEXTLABEL SETTER FORWARDERS
     // All of these must first check if TextLabel has been constructed yet, and if not, then construct it themselves.
-    void setContent(String s) { 
+    public void setContent(String s) { 
         if (textLabel == null ) constructTextLabel();
         textLabel.setContent(s);
         
     }
 
-    void setTextSize(float s) { 
+    public void setTextSize(float s) { 
         if (textLabel == null ) constructTextLabel();
         textLabel.setTextSize(s);
     }
 
-    // ICON SETTER FORWARDERS
+    public void updateLabelStylePack(TextLabelStyle[] newStyles) {
+        textLabel.updateStylePack(newStyles);
+    }
 
-    void setIcon(String dest) {
+    // ICON SETTER FORWARDERS
+    public void setIcon(String dest) {
         if (icon == null) {
             constructIcon(dest);
-        } else icon.setImage(dest);
+        } else icon.setShape(dest);
     }
 
-    void setIcon(PImage img) {
+    public void setIcon(PShape shape) {
         if (icon == null) {
-            constructIcon(img);
-        } else icon.setImage(img);
+            constructIcon(shape);
+        } else icon.setShape(shape);
     }
+
+    public void computeIconSize() {
+        float xs = xSize*0.68;
+        float ys = ySize*0.68;
+
+        if (xs < ys) icon.setSize(xs, xs);
+        else icon.setSize(ys, ys);
+    }
+
+
+    
+    // █▀▀ █▀▀ ▀█▀ ▀█▀ █▀▀ █▀█ █▀
+    // █▄█ ██▄ ░█░ ░█░ ██▄ █▀▄ ▄█
+
+    public boolean getSwitchState() { return pressed; }
 
     
 
@@ -112,6 +160,11 @@ public class Button extends UIElement implements Container, Hoverable, Clickable
     // █▀█ █▄▄ ░█░ █ █▄█ █░▀█ ▄█
 
     void mouseClicked() {
+        this.state = UIState.ACTIVATED;
+
+        if (toggleable) pressed = !pressed;
+        else pressed = true;
+        
         if (onClick != null) onClick.run();
     }
 
@@ -126,25 +179,45 @@ public class Button extends UIElement implements Container, Hoverable, Clickable
 
     @Override void render() {
 
-        // Communicate the current state of the Button to the VisualFrame and TextLabel and render them accordingly.
-        visualFrame.setAnchorPoints(xAnchor,yAnchor);
-        visualFrame.setAbsolute(xAbs,yAbs);
-        //visualFrame.setUIState(state);
-        visualFrame.render(state);
+        // Logic for the button's pressed state.
+        // if (this.state != null) {
+        //     switch (this.state) {
+        //         case ACTIVATED: // When the button is clicked, set pressed to true
+        //             pressed = true;
+        //             break;
+        //         default:
+        //             pressed = false;
+        //             break;
+        //     }
+        // }
 
-        if (textLabel != null) {
-            textLabel.setAnchorPoints(xAnchor,yAnchor);
-            textLabel.setAbsolute(xAbs,yAbs);
-            textLabel.setUIState(state);
-            textLabel.render();
+        
+        UIState visualState = this.state;
+        if (visualState != UIState.ACTIVATED) { // If the button is no longer being actively clicked on
+            if (!toggleable) pressed = false; // If the button is not toggleable, just reset pressed back to false.
+            else if (pressed) visualState = UIState.ACTIVATED; // If the button is toggleable, then force the visualState to be ACTIVATED until pressed is set to false by the onClick method.
         }
 
+        // Communicate the current state of the Button to all of its subset visual elements
+        for (UIElement element : subsetElements) {
+            element.setSize(this.xSize, this.ySize);
+            element.setAnchorPoints(this.xAnchor, this.yAnchor);
+            element.setAbsolute(this.xAbs, this.yAbs);
+            element.setUIState(visualState);
+        }
+
+        // Center the button's icon to the middle of it.
         if (icon != null) {
-            icon.setUIState(state); // Right now unused, but I don't want to worry about forgetting to implement this in the chain later down the line if I do implement states for ImageLabels.
             icon.setAnchorPoints(0.5, 0.5);
+            computeIconSize();
             icon.setPosition(xSize/2,ySize/2);
-            icon.render();
         }
+
+        // println(this.pressed);
+
+
+        // Render all of the linked visual elements, after their custom settings were applied
+        for (UIElement element : subsetElements) element.render();
 
     }
 

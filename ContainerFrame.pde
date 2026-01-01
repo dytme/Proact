@@ -23,34 +23,42 @@ public class ContainerFrame extends UIElement implements Container {
     // Visual Frame element
     VisualFrame visualFrame;
 
-         // Hierarchy       // Style       // Render   // Positioning        // Size
-    public ContainerFrame(Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
+
+    public ContainerFrame(Container parent, UITheme theme, FrameStyle[] stylePack) {
+        super(parent, theme, 0, 0, 0, 100, 100);
 
         // Create a Visual Frame element that will act as the 'visible' part of the frame.
         //      xPos and yPos = 0 because positioning is relative. We want our visualFrame to cover the entire area of our actual element.
         //      As such, we need it's position to be 0,0 and it's size to be equal to that of the actual element.
-        visualFrame = new VisualFrame(this, this.theme, 0, 0, xSize, ySize);
+        visualFrame = new VisualFrame(this, this.theme, stylePack, 0, 0, xSize, ySize);
 
         // Explicitly mention that this is to be considered a 'child' of it's parent, and not a building block of the parent itself.
         this.parent.addChild(this);
     }
 
-    @Override void setTheme(UITheme theme) {
+
+    // Setters
+    @Override public void setTheme(UITheme theme) {
         super.setTheme(theme);
         visualFrame.setTheme(theme);
     }
 
+
+    // Rendering
     @Override void render() {
 
         // Communicate the current state of the ContainerFrame to the VisualFrame and render it accordingly.
-        visualFrame.setAnchorPoints(xAnchor,yAnchor);
-        visualFrame.setAbsolute(xAbs,yAbs);
-        visualFrame.render(state);
+        visualFrame.setAnchorPoints(xAnchor, yAnchor);
+        visualFrame.setAbsolute(xAbs, yAbs);
+        visualFrame.setSize(xSize, ySize);
+
+        visualFrame.setUIState(this.state);
+        visualFrame.render();
 
         // THEN Check if there are any children present, and if so, render them!
         UIElement[] children = childManager.getChildren();
         for (UIElement child : children) {
+            child.computeAbsolutePosition(); // Update the position of the container's children.
             if (child.visible) child.render();
         }
 

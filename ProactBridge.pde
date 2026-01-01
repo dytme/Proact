@@ -1,12 +1,31 @@
 // package proact.utilities
 
 
+
+
+
+// █▀ █▀▀ ▀█▀ █░█ █▀█
+// ▄█ ██▄ ░█░ █▄█ █▀▀
+
+
+public void proactSetup() {
+
+    // Initialize the Default/Fallback Theme
+    DefaultTheme = new DefaultThemeClass();
+
+    // Initialize Root
+    proactRoot = new UIRoot(this, 1, true);
+    proactRoot.setVisible(true);
+
+}
+
+
 // █▀█ █▀▀ █▄░█ █▀▄ █▀▀ █▀█   █▀▀ █▄░█ █▀▀ █ █▄░█ █▀▀
 // █▀▄ ██▄ █░▀█ █▄▀ ██▄ █▀▄   ██▄ █░▀█ █▄█ █ █░▀█ ██▄
 
 ArrayList<UIRoot> UIRoots = new ArrayList<>();
 
-void proactDrawLoop() {
+void proactDrawLoop(PApplet applet) {
     
     // Render UI Loop
 
@@ -21,14 +40,26 @@ void proactDrawLoop() {
         if (element.getUIState() == UIState.HOVERED) element.setUIState(UIState.DEFAULT);
     }
 
+    // Reset hoveredElement by default, which will be overwritten only if we actually find a hoveredElement.
+    Events.hoveredElement = null;
+
     // Check if an element is actually being hovered over.
     for (Hoverable element : Events.hoverableElements) {
         if (element.isMouseOver(mouseX, mouseY)) {
+
+            if (Settings.useCursor) applet.cursor(HAND); // If proact is supposed to touch the cursor and something is being hovered, then make the cursor reflect that.
+
             if (element.getUIState() == UIState.DEFAULT) element.setUIState(UIState.HOVERED); // Only apply the style if the state of the button is default (other states like ACTIVATED through clicking take priority here)
             element.mouseHovered(); // Tell the element that it's being hovered.
+
+            Events.hoveredElement = (UIElement) element; // Store the latest hovered element into the globally accessible field.
+
             return; // Not break, to only stop this method and not the entire draw loop.
+
         } else element.setUIState(UIState.DEFAULT); // Also added here to facilitate MouseLeave() like behavior.
     }
+
+    if (Settings.useCursor) if (Events.hoveredElement == null) applet.cursor(ARROW); // If no element is being hovered anymore, and Proact is supposed to mess around with the cursor, then return the cursor to default 
 
 }
 
@@ -47,9 +78,14 @@ void proactDrawLoop() {
 void proactMousePressed(float cx, float cy) {
     for (Clickable element : Events.clickableElements) {
         if (element.isClicked(cx, cy)) {
-            element.setUIState(UIState.ACTIVATED);
+
+            // element.setUIState(UIState.ACTIVATED);
             element.mouseClicked(); // Tell the element that it's being clicked.
-            return;
+
+            Events.focusedElement = (UIElement) element; // Store the latest clicked element into globally accessible field (as the currently focused on element)
+
+            return; // Once the first element in decreasing order of their zIndex is clicked, stop seeking if any other elements have been clicked or not.
+
         }
     }
 }
@@ -64,6 +100,15 @@ void proactMouseReleased() {
 
 
 // TODO: Implement this
+// mouseDragged() is fired whenever the mouse moves while leftClick is held down.
+// hence, there's no need for 'release' logic, as the slider will simply stop moving/updating it's position and automatically store the newest value in it's fields.
 void proactMouseDragged() {
 
+    // As we're already processing the interaction through the logic for hovered elements, we don't have to worry about any other checks besides runtime type.
+
+    if (Events.hoveredElement instanceof Draggable) { // Whenever the mouse starts to be dragged, check if hoveredElement is also draggable at runtime.
+                                                    // instanceof also doesn't throw a NullPointerException when hoveredElement is null, so we don't have to worry about that.
+        // Events.hoveredElement.moveToMouse(mouseX, mouseY); // TODO: Implement this when we have an actual slider :))
+        
+    }
 }

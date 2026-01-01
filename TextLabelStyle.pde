@@ -11,18 +11,24 @@ public class TextLabelStyle {
 
     // As mentioned previously, default values can be safely omitted from fields.
 
-    // Whether or not it has a visual frame
-    FrameStyle visualFrameStyle;
+    // StylePack for the VisualFrame (if it has one)
+    FrameStyle[] visualFrameStylePack;
 
     // Content
+    float textSize;
     color textColor;
+    PFont fontStyle;
     float textTransparency;
     
-    TextLabelStyle(FrameStyle visualFrameStyle, color textColor, float textTransparency) {
+    TextLabelStyle(FrameStyle[] visualFrameStylePack, float textSize, color textColor, PFont fontStyle, float textTransparency) {
 
-        this.visualFrameStyle = visualFrameStyle;
+        this.visualFrameStylePack = visualFrameStylePack;
+
+        this.textSize = textSize;
 
         this.textColor = textColor;
+        this.fontStyle = fontStyle;
+
         this.textTransparency = textTransparency;
 
     }

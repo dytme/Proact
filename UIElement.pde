@@ -43,6 +43,7 @@ abstract class UIElement implements StateDriven {
 
 
     
+
     // █▀▀ █▀█ █▄░█ █▀ ▀█▀ █▀█ █░█ █▀▀ ▀█▀ █▀█ █▀█ █▀
     // █▄▄ █▄█ █░▀█ ▄█ ░█░ █▀▄ █▄█ █▄▄ ░█░ █▄█ █▀▄ ▄█
 
@@ -87,11 +88,13 @@ abstract class UIElement implements StateDriven {
 
 
 
+
     // █▀█ █▀▀ █▀▀ █▀▀ █▀█ █▀▀ █▄░█ █▀▀ █▀▀   █▀▄▀█ █▀▀ ▀█▀ █░█ █▀█ █▀▄ █▀
     // █▀▄ ██▄ █▀░ ██▄ █▀▄ ██▄ █░▀█ █▄▄ ██▄   █░▀░█ ██▄ ░█░ █▀█ █▄█ █▄▀ ▄█
     // Will be overriden by individual elements, but have to be referenced.
 
     void render() {};
+
 
 
 
@@ -128,40 +131,70 @@ abstract class UIElement implements StateDriven {
     }
 
     
+
+
     // █▀ █▀▀ ▀█▀ ▀█▀ █▀▀ █▀█ █▀
     // ▄█ ██▄ ░█░ ░█░ ██▄ █▀▄ ▄█
 
+
+    // Visibility
     public void setVisible(boolean arg) {
         // TODO: Figure out a way to update the presence of individual elemenents in ArrayLists that are continuously looped to check interaction
         // i.e. when a button is invisible, stop the framework from checking whether or not the mouse is on top of it to update it's state to HOVERED.
         visible = arg;
     }
 
+
+    // Rendering
     public void setZIndex(int ind) {
         zIndexAbs = parent.getZIndex() + ind;
     }
 
+
+    // Positioning
+    public void computeAbsolutePosition() {
+        float parentPosition[] = parent.getPosition();
+        this.xAbs = parentPosition[0] + xPos - (this.xSize * xAnchor);
+        this.yAbs = parentPosition[1] + yPos - (this.ySize * yAnchor);
+    }
+
     public void setAbsolute(float x, float y) { // Forcefully overwrites the absolute positioning of the element, without accounting for values like AnchorPoints or relative positioning
-        xAbs = x;
-        yAbs = y;
+        this.xAbs = x;
+        this.yAbs = y;
     }
 
     public void setPosition(float x, float y) { // Takes a new (relative) position and computes & applies a new absolute position referenced to it.
-        float parentPosition[] = parent.getPosition();
-        this.xAbs = parentPosition[0] + x - (xSize * xAnchor);
-        this.yAbs = parentPosition[1] + y - (ySize * yAnchor);
+       this.xPos = x;
+       this.yPos = y;
+       computeAbsolutePosition();
     }
 
+    // TODO: setAnchorPoints seemingly does nothing until the position of a parent changes.
     public void setAnchorPoints(float x, float y) {
         xAnchor = x;
         yAnchor = y;
-        setPosition(xPos, yPos);
+        computeAbsolutePosition();
     }
+
+
+    // Sizing
+    public void setSize(float x, float y) {
+        this.xSize = x;
+        this.ySize = y;
+    }
+
+
+    // Visual Aspect
+    public void setTheme(UITheme theme) {
+        this.theme = theme;
+    };
 
     @Override public void setUIState(UIState state) {
         this.state = state;
     }
 
+
+    // Event Connections
     public void setEventMethod(UIState state, Runnable method) {
         switch (state) {
             case HOVERED:
@@ -176,11 +209,13 @@ abstract class UIElement implements StateDriven {
         }
     }
 
-    void setTheme(UITheme theme) {
-        this.theme = theme;
-    };
+    
 
 }
+
+
+
+
 
 
 // Class<Type> means that the class can be assigned of a specific type later on, most likely UIElement in our case.
@@ -203,6 +238,7 @@ class ChildManager {
     }
 
     UIElement[] getChildren() {
+        if (children == null) return null; // If the array hasn't been initialized yet, just return nothing
         return children.toArray(new UIElement[0]);
         // toArray(new UIElement[0]) uses the array only as a *type token*.
         // If the array is too small (0 almost always is), Java allocates a
