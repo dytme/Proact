@@ -48,23 +48,18 @@ interface UITheme {
     // Frames & Visual Frames
     FrameStyle frame(UIState state);
 
+    FrameStyle[] buttonStylePack(String stylePackName);
+
     // Text
     TextLabelStyle textLabel(UIState state);
     PFont regularFont();
     PFont boldFont();
     PFont italicFont();
-
-    // Buttons
-    FrameStyle button(UIState state);
+    
+    TextLabelStyle[] textLabelStylePack(String stylePackName);
 
     // ShapeLabel
     ShapeLabelStyle shapeLabel(UIState state);
-
-    // // Icons
-    // color defaultIconColor();
-    // color hoveredIconColor();
-    // color activatedIconColor();
-    // color disabledIconColor();
 }
 
 

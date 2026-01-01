@@ -1,12 +1,31 @@
 // package proact.utilities
 
 
+
+
+
+// █▀ █▀▀ ▀█▀ █░█ █▀█
+// ▄█ ██▄ ░█░ █▄█ █▀▀
+
+
+public void proactSetup() {
+
+    // Initialize the Default/Fallback Theme
+    DefaultTheme = new DefaultThemeClass();
+
+    // Initialize Root
+    proactRoot = new UIRoot(this, 1, true);
+    proactRoot.setVisible(true);
+
+}
+
+
 // █▀█ █▀▀ █▄░█ █▀▄ █▀▀ █▀█   █▀▀ █▄░█ █▀▀ █ █▄░█ █▀▀
 // █▀▄ ██▄ █░▀█ █▄▀ ██▄ █▀▄   ██▄ █░▀█ █▄█ █ █░▀█ ██▄
 
 ArrayList<UIRoot> UIRoots = new ArrayList<>();
 
-void proactDrawLoop() {
+void proactDrawLoop(PApplet applet) {
     
     // Render UI Loop
 
@@ -28,6 +47,8 @@ void proactDrawLoop() {
     for (Hoverable element : Events.hoverableElements) {
         if (element.isMouseOver(mouseX, mouseY)) {
 
+            if (Settings.useCursor) applet.cursor(HAND); // If proact is supposed to touch the cursor and something is being hovered, then make the cursor reflect that.
+
             if (element.getUIState() == UIState.DEFAULT) element.setUIState(UIState.HOVERED); // Only apply the style if the state of the button is default (other states like ACTIVATED through clicking take priority here)
             element.mouseHovered(); // Tell the element that it's being hovered.
 
@@ -37,6 +58,8 @@ void proactDrawLoop() {
 
         } else element.setUIState(UIState.DEFAULT); // Also added here to facilitate MouseLeave() like behavior.
     }
+
+    if (Settings.useCursor) if (Events.hoveredElement == null) applet.cursor(ARROW); // If no element is being hovered anymore, and Proact is supposed to mess around with the cursor, then return the cursor to default 
 
 }
 
@@ -56,7 +79,7 @@ void proactMousePressed(float cx, float cy) {
     for (Clickable element : Events.clickableElements) {
         if (element.isClicked(cx, cy)) {
 
-            element.setUIState(UIState.ACTIVATED);
+            // element.setUIState(UIState.ACTIVATED);
             element.mouseClicked(); // Tell the element that it's being clicked.
 
             Events.focusedElement = (UIElement) element; // Store the latest clicked element into globally accessible field (as the currently focused on element)
@@ -84,7 +107,7 @@ void proactMouseDragged() {
     // As we're already processing the interaction through the logic for hovered elements, we don't have to worry about any other checks besides runtime type.
 
     if (Events.hoveredElement instanceof Draggable) { // Whenever the mouse starts to be dragged, check if hoveredElement is also draggable at runtime.
-                                                      // instanceof also doesn't throw a NullPointerException when hoveredElement is null, so we don't have to worry about that.
+                                                    // instanceof also doesn't throw a NullPointerException when hoveredElement is null, so we don't have to worry about that.
         // Events.hoveredElement.moveToMouse(mouseX, mouseY); // TODO: Implement this when we have an actual slider :))
         
     }

@@ -33,8 +33,8 @@ public class ShapeLabel extends UIElement {
 
 
     // Constructors
-    ShapeLabel(Container parent, UITheme theme, int zIndex, PShape shape, boolean useStateDrivenStyling, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
+    ShapeLabel(Container parent, UITheme theme, PShape shape, boolean useStateDrivenStyling) {
+        super(parent, theme, 1, 0, 0, 100, 100);
         this.shape = shape;
 
         this.useStateDrivenStyling = useStateDrivenStyling;
@@ -42,10 +42,10 @@ public class ShapeLabel extends UIElement {
         this.parent.addChild(this);
     }
 
-    ShapeLabel(Container parent, UITheme theme, int zIndex, String dest, boolean useStateDrivenStyling, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
-        this.destination = dest;
-        this.shape = loadShape(dest);
+    ShapeLabel(Container parent, UITheme theme, String filePath, boolean useStateDrivenStyling) {
+        super(parent, theme, 1, 0, 0, 100, 100);
+        this.destination = filePath;
+        this.shape = loadShape(filePath);
 
         if (shape == null) {
             throw new IllegalArgumentException("Shape parented to " + parent + " could not be constructed.");

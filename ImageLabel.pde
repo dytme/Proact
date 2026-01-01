@@ -17,17 +17,17 @@ public class ImageLabel extends UIElement {
     String destination;
     PImage img;
 
-    ImageLabel(Container parent, UITheme theme, int zIndex, PImage img, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
+    ImageLabel(Container parent, UITheme theme, PImage img) {
+        super(parent, theme, 1, 0, 0, 100, 100);
         this.img = img;
 
         this.parent.addChild(this);
     }
 
-    ImageLabel(Container parent, UITheme theme, int zIndex, String dest, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, zIndex, xPos, yPos, xSize, ySize);
-        this.destination = dest;
-        this.img = loadImage(dest);
+    ImageLabel(Container parent, UITheme theme, String filePath) {
+        super(parent, theme, 1, 0, 0, 100, 100);
+        this.destination = filePath;
+        this.img = loadImage(filePath);
 
         if (img == null) {
             throw new IllegalArgumentException("Image parented to " + parent + " could not be constructed.");

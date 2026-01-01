@@ -169,6 +169,7 @@ abstract class UIElement implements StateDriven {
        computeAbsolutePosition();
     }
 
+    // TODO: setAnchorPoints seemingly does nothing until the position of a parent changes.
     public void setAnchorPoints(float x, float y) {
         xAnchor = x;
         yAnchor = y;

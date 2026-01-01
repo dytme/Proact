@@ -25,10 +25,10 @@ class VisualFrame extends UIElement {
 
 
     // All of the styles for each possible state of the element
-    FrameStyle frameDefault = theme.frame(UIState.DEFAULT);
-    FrameStyle frameHovered = theme.frame(UIState.HOVERED);
-    FrameStyle frameActivated = theme.frame(UIState.ACTIVATED);
-    FrameStyle frameDisabled = theme.frame(UIState.DISABLED);
+    FrameStyle frameDefault;
+    FrameStyle frameHovered;
+    FrameStyle frameActivated;
+    FrameStyle frameDisabled;
 
     // Whatever style is currently applied. Will be changed whenever the field 'state' changes.
     FrameStyle currentStyle = frameDefault;
@@ -36,29 +36,54 @@ class VisualFrame extends UIElement {
 
     // Constructor isn't public because VisualFrame is a Helper Class
                       // Hierarchy       // Style       // Positioning          // Size
-    VisualFrame(Container parent, UITheme theme, float xPos, float yPos, float xSize, float ySize) {
+    VisualFrame(Container parent, UITheme theme, FrameStyle[] stylePack, float xPos, float yPos, float xSize, float ySize) {
         super(parent, theme, 0, xPos, yPos, xSize, ySize);
+
+        // println("OBJECT: " + parent);
+        // //println(stylePack);
+        // println("========================");
+
+        if (stylePack != null) updateStylePack(stylePack);
+        else updateStylePack(); // If no style pack has been provided, then fall back to the defaults of the theme.
     }
 
-    // Constructor that allows you to override the default FrameStyles of the theme.
-    // Used for things like buttons, which still have frames as the backbone of their visual, but utilize different styles compared to the default ones.
-    VisualFrame(Container parent, UITheme theme, FrameStyle frameDefault, FrameStyle frameHovered, FrameStyle frameActivated, FrameStyle frameDisabled, float xPos, float yPos, float xSize, float ySize) {
-        super(parent, theme, 0, xPos, yPos, xSize, ySize);
-        this.frameDefault = frameDefault;
-        this.frameHovered = frameHovered;
-        this.frameActivated = frameActivated;
-        this.frameDisabled = frameDisabled;
+    // // Constructor that allows you to override the default FrameStyles of the theme.
+    // // Used for things like buttons, which still have frames as the backbone of their visual, but utilize different styles compared to the default ones.
+    // VisualFrame(Container parent, UITheme theme, FrameStyle frameDefault, FrameStyle frameHovered, FrameStyle frameActivated, FrameStyle frameDisabled, float xPos, float yPos, float xSize, float ySize) {
+    //     super(parent, theme, 0, xPos, yPos, xSize, ySize);
+
+    //     this.frameDefault = frameDefault;
+    //     this.frameHovered = frameHovered;
+    //     this.frameActivated = frameActivated;
+    //     this.frameDisabled = frameDisabled;
+    // }
+
+
+    // Update the new styles after the theme of the element changes.
+    void updateStylePack() {
+        this.frameDefault = theme.frame(UIState.DEFAULT);
+        this.frameHovered = theme.frame(UIState.HOVERED);
+        this.frameActivated = theme.frame(UIState.ACTIVATED);
+        this.frameDisabled = theme.frame(UIState.DISABLED);
+
+        this.currentStyle = frameDefault;
     }
 
+    // Apply a new style pack to the element.
+    void updateStylePack(FrameStyle[] newStyles) {
 
+        // We don't have to worry that much about missing styles.
+        //  If a style is missing for a specific state, then it simply won't update from the previous, valid style.
+        //  If no custom styles have been applied yet, then those are just the default ones.
+        if (newStyles[0] != null) frameDefault = newStyles[0];
+        if (newStyles[1] != null) frameHovered = newStyles[1];
+        if (newStyles[2] != null) frameActivated = newStyles[2];
+        if (newStyles[3] != null) frameDisabled = newStyles[3];
+    }
 
     @Override public void setTheme(UITheme theme) {
         super.setTheme(theme);
-
-        frameDefault = theme.frame(UIState.DEFAULT);
-        frameHovered = theme.frame(UIState.HOVERED);
-        frameActivated = theme.frame(UIState.ACTIVATED);
-        frameDisabled = theme.frame(UIState.DISABLED);
+        updateStylePack();
     }
 
 
@@ -83,6 +108,8 @@ class VisualFrame extends UIElement {
             }
         }
 
+        // If currentStyle is not loaded in yet, then don't even attempt to draw anything.
+        if (currentStyle == null) return;
 
         // Combine backgroundColor with backgroundTransparency and then set that as the actual color.
         applet.fill(color(
