@@ -39,24 +39,9 @@ class VisualFrame extends UIElement {
     VisualFrame(Container parent, UITheme theme, FrameStyle[] stylePack, float xPos, float yPos, float xSize, float ySize) {
         super(parent, theme, 0, xPos, yPos, xSize, ySize);
 
-        // println("OBJECT: " + parent);
-        // //println(stylePack);
-        // println("========================");
-
         if (stylePack != null) updateStylePack(stylePack);
         else updateStylePack(); // If no style pack has been provided, then fall back to the defaults of the theme.
     }
-
-    // // Constructor that allows you to override the default FrameStyles of the theme.
-    // // Used for things like buttons, which still have frames as the backbone of their visual, but utilize different styles compared to the default ones.
-    // VisualFrame(Container parent, UITheme theme, FrameStyle frameDefault, FrameStyle frameHovered, FrameStyle frameActivated, FrameStyle frameDisabled, float xPos, float yPos, float xSize, float ySize) {
-    //     super(parent, theme, 0, xPos, yPos, xSize, ySize);
-
-    //     this.frameDefault = frameDefault;
-    //     this.frameHovered = frameHovered;
-    //     this.frameActivated = frameActivated;
-    //     this.frameDisabled = frameDisabled;
-    // }
 
 
     // Update the new styles after the theme of the element changes.
@@ -132,6 +117,8 @@ class VisualFrame extends UIElement {
 
         // Render the actual frame (rectangle)
         applet.rect(xAbs, yAbs, xSize, ySize, currentStyle.cornerRadius);
+
+        // println("Parent: " + parent + " Coordinates: x" + xAbs + "   y: " + yAbs);
     }
 
 

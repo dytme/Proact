@@ -25,7 +25,7 @@ public void proactSetup() {
 
 ArrayList<UIRoot> UIRoots = new ArrayList<>();
 
-void proactDrawLoop(PApplet applet) {
+void proactDrawLoop(PApplet applet, float cx, float cy) {
     
     // Render UI Loop
 
@@ -45,7 +45,7 @@ void proactDrawLoop(PApplet applet) {
 
     // Check if an element is actually being hovered over.
     for (Hoverable element : Events.hoverableElements) {
-        if (element.isMouseOver(mouseX, mouseY)) {
+        if (element.isMouseOver(cx, cy)) {
 
             if (Settings.useCursor) applet.cursor(HAND); // If proact is supposed to touch the cursor and something is being hovered, then make the cursor reflect that.
 
@@ -60,6 +60,8 @@ void proactDrawLoop(PApplet applet) {
     }
 
     if (Settings.useCursor) if (Events.hoveredElement == null) applet.cursor(ARROW); // If no element is being hovered anymore, and Proact is supposed to mess around with the cursor, then return the cursor to default 
+
+
 
 }
 
@@ -96,19 +98,42 @@ void proactMouseReleased() {
     for (Clickable element : Events.clickableElements) {
         if (element.getUIState() == UIState.ACTIVATED) element.setUIState(UIState.DEFAULT);
     }
+
+    Events.draggedElement = null; // Reset the dragged element back to null (as nothing is being dragged anymore)
 }
 
 
-// TODO: Implement this
 // mouseDragged() is fired whenever the mouse moves while leftClick is held down.
 // hence, there's no need for 'release' logic, as the slider will simply stop moving/updating it's position and automatically store the newest value in it's fields.
-void proactMouseDragged() {
+void proactMouseDragged(float cx, float cy) {
 
     // As we're already processing the interaction through the logic for hovered elements, we don't have to worry about any other checks besides runtime type.
+    UIElement hovered = Events.hoveredElement; // Temporary variable to avoid improper casting of the global field.
 
-    if (Events.hoveredElement instanceof Draggable) { // Whenever the mouse starts to be dragged, check if hoveredElement is also draggable at runtime.
-                                                    // instanceof also doesn't throw a NullPointerException when hoveredElement is null, so we don't have to worry about that.
-        // Events.hoveredElement.moveToMouse(mouseX, mouseY); // TODO: Implement this when we have an actual slider :))
-        
+    if (hovered instanceof Draggable) { // Whenever the mouse starts to be dragged, check if hoveredElement is also draggable at runtime.
+                                                                         // instanceof also doesn't throw a NullPointerException when hoveredElement is null, so we don't have to worry about that.
+        Draggable element = (Draggable) hovered;
+        Events.draggedElement = element; // If so, cast hovered to 
     }
+
+    if (Events.draggedElement != null) Events.draggedElement.onDrag(cx, cy); // If an object is actively being dragged, then inform it as such.
+    
+}
+
+
+// Similar logic to mouseDragged(), except we check for eligiblity on every key press.
+void proactKeyPressed(char key) {
+
+    println("key detected: " + key);
+
+    UIElement focused = Events.focusedElement;
+
+    println(focused);
+
+    if (focused instanceof AcceptKeyboardInput) {
+        print("Focused element accepts keyboard input");
+        AcceptKeyboardInput element = (AcceptKeyboardInput) focused;
+        element.keyboardInput(key);
+    }
+
 }
