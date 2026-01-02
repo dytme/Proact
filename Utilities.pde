@@ -76,11 +76,23 @@ public static class Events {
     // Global states for focused and hovered elements. These get updated with the latest UIElement which has been clicked or hovered.
     public static UIElement focusedElement;
     public static UIElement hoveredElement;
+    public static Draggable draggedElement;
 
 
     // This has a bit of boilerplate, but the alternative for Java to having a generic method that could sort these individually is more complex than simply having a few of these methods in parallel.
     public static final ArrayList<Clickable> clickableElements = new ArrayList<>();
     public static final ArrayList<Hoverable> hoverableElements = new ArrayList<>();
+
+    // TODO: REPLACE ALL DIRECT ADDITIONS WITH THESE SETTERS!!
+    public static void registerToHoverable(Hoverable element) {
+        hoverableElements.add(element);
+        sortHoverableElementsByZIndex();
+    }
+    
+    public static void registerToClickable(Clickable element) {
+        clickableElements.add(element);
+        sortClickableElementsByZIndex();
+    }
 
 
     public static void sortClickableElementsByZIndex() {
@@ -102,8 +114,8 @@ public interface Clickable extends StateDriven, Hoverable {
         return isMouseOver(cx, cy);
     }
 
-    void setOnClick(Runnable method);
-    void mouseClicked();
+    public void setOnClick(Runnable method);
+    public void mouseClicked();
 }
 
 public interface Hoverable extends StateDriven {
@@ -126,13 +138,17 @@ public interface Hoverable extends StateDriven {
     }
 
     // Transfer the Runnable method to the button, to be triggered whenever the button is hovered.
-    void setOnHover(Runnable method);
-    void mouseHovered();
+    public void setOnHover(Runnable method);
+    public void mouseHovered();
 
 }
 
 public interface Draggable {
+    public void onDrag(float cx, float cy);
+}
 
+public interface AcceptKeyboardInput {
+    public void keyboardInput(char key);
 }
 
 

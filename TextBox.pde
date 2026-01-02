@@ -13,7 +13,7 @@ Frame that also has a text element within it.
 
 */
 
-public class TextLabel extends UIElement {
+public class TextBox extends UIElement implements Hoverable, Clickable, AcceptKeyboardInput {
 
     // Specific properties of a TextLabel
     int horizontalAllignment = CENTER;
@@ -21,7 +21,14 @@ public class TextLabel extends UIElement {
 
     float textSize = -1; // -1 (or any negative number) implies that the field has not been overwritten by the user.
                          // If you want the label to use it's style's size, you can manually set this to something negative.
-    String content = "TextLabel";
+    String content = "";
+
+    // Specific properties of a TextBox
+    String placeholderContent = "Your Text Here!";
+    boolean clearTextOnFocus = true;
+
+    Runnable onHover;
+    Runnable onClick;
     
     // TextLabel Styles
     TextLabelStyle textLabelDefault;
@@ -48,7 +55,7 @@ public class TextLabel extends UIElement {
     // █▄▄ █▄█ █░▀█ ▄█ ░█░ █▀▄ █▄█ █▄▄ ░█░ █▄█ █▀▄
 
                      // Hierarchy      // Style       // Render
-    public TextLabel(Container parent, UITheme theme, TextLabelStyle[] stylePack, boolean hasVisualFrame) {
+    public TextBox(Container parent, UITheme theme, TextLabelStyle[] stylePack, boolean hasVisualFrame) {
         super(parent, theme, 1, 0, 0, 100, 50);
 
         // Only create a visualFrame element if the TextLabel has one.
@@ -61,6 +68,10 @@ public class TextLabel extends UIElement {
             else visualFrameStylePack = stylePack[0].visualFrameStylePack; // Get the visualFrameStylePack from the default TextLabel style.
 
             visualFrame = new VisualFrame(parent, theme, visualFrameStylePack, 0, 0, xSize, ySize); // Parse that to the visualFrame element.
+
+            // Add to the ArrayLists that handle event management
+            Events.registerToClickable(this);
+            Events.registerToHoverable(this);
 
         }
 
@@ -128,6 +139,54 @@ public class TextLabel extends UIElement {
     }
 
 
+    public void setClearTextOnFocus(boolean b) {
+        this.clearTextOnFocus = b;
+    }
+
+
+    public void setOnClick(Runnable m) { this.onClick = m; }
+    public void setOnHover(Runnable m) { this.onHover = m; }
+
+    public void mouseClicked() {
+        this.content = "";
+
+        if (onClick != null) onClick.run();
+    }
+
+    public void mouseHovered() {
+        if (onHover != null) onHover.run();
+    }
+
+
+    public void keyboardInput(char key) {
+
+        println("textbox received input: " + key);
+
+        if (key != CODED) { // Avoid special characters (through processing)
+            int code = (int) key;
+            if (code == 8 && this.content.length() > 0) { // If backspace has been pressed
+                this.content = this.content.substring(0, this.content.length() - 1);
+            } else if ((code >= 0 && code <= 31) || code == 127) {
+                return;
+            } else this.content = (this.content + key);
+            
+        }
+        
+    }
+
+
+
+    
+    // █▀▀ █▀▀ ▀█▀ ▀█▀ █▀▀ █▀█ █▀
+    // █▄█ ██▄ ░█░ ░█░ ██▄ █▀▄ ▄█
+
+    public String getContent() {
+        return this.content;
+    }
+
+
+
+
     
     // █▀█ █▀▀ █▄░█ █▀▄ █▀▀ █▀█
     // █▀▄ ██▄ █░▀█ █▄▀ ██▄ █▀▄
@@ -167,24 +226,44 @@ public class TextLabel extends UIElement {
         
         // Higher Level Code, Specific to the TextLabel
 
-        // Update font either through the style, or by the overwritten variable.
-        if (currentFont == null && currentStyle.fontStyle != null) applet.textFont(currentStyle.fontStyle);
-        else if (currentFont != null) applet.textFont(currentFont);
-
-        applet.fill(color(
-            red(currentStyle.textColor),
-            green(currentStyle.textColor),
-            blue(currentStyle.textColor),
-            map(currentStyle.textTransparency, 0, 1, 255, 0)
-        ));
-
         // If the textSize property is not null, then it means the property was overwritten.
         // otherwise, use the default one given by the currentStyle.
         if (this.textSize < 0) applet.textSize(currentStyle.textSize);
         else applet.textSize(this.textSize);
 
         applet.textAlign(horizontalAllignment, verticalAllignment);
-        applet.text(content, xAbs, yAbs, xSize, ySize);
+
+
+        // Update font either through the style, or by the overwritten variable.
+        if (currentFont == null && currentStyle.fontStyle != null) applet.textFont(currentStyle.fontStyle);
+        else if (currentFont != null) applet.textFont(currentFont);
+
+
+        // If there is some content (text already written in the TextBox) then show that
+        if (content.length() > 0) {
+
+            applet.fill(color(
+                red(currentStyle.textColor),
+                green(currentStyle.textColor),
+                blue(currentStyle.textColor),
+                map(currentStyle.textTransparency, 0, 1, 255, 0)
+            ));
+
+            applet.text(content, xAbs, yAbs, xSize, ySize);
+
+        } else { // Otherwise, show the (more transparent) placeholder.
+
+            applet.fill(color(
+                red(currentStyle.textColor),
+                green(currentStyle.textColor),
+                blue(currentStyle.textColor),
+                map(currentStyle.textTransparency, 0, 1, 150, 0)
+            ));
+
+            applet.text(placeholderContent, xAbs, yAbs, xSize, ySize);
+        }
+
+        
         
 
     }

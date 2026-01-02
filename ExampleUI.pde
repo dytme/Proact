@@ -12,6 +12,9 @@ ImageLabel testImageLabel;
 ImageLabel testImageLabelDest;
 ShapeLabel testShapeLabel;
 
+Slider testSlider;
+TextLabel currentSliderValue;
+
 boolean moveTestFrame = false;
 int direction = 1;
 
@@ -29,11 +32,10 @@ void devTestSetupMethod() {
     testSubsetFrame.setSize(50, 50);
 
     // TextLabel test
-    // public TextLabel(Container parent, UITheme theme, boolean hasVisualFrame, int zIndex, float xPos, float yPos, float xSize, float ySize)
-    testLabel = new TextLabel(testFrame, null, null, true);
-    testLabel.setPosition(300, 100);
-    testLabel.setZIndex(1000);
-    testLabel.setContent("Testing!");
+    // testLabel = new TextLabel(testFrame, null, null, true);
+    // testLabel.setPosition(300, 100);
+    // testLabel.setZIndex(1000);
+    // testLabel.setContent("Testing!");
 
     // Container parent, UITheme theme, int zIndex, float xPos, float yPos, float xSize, float ySize
     // Button test
@@ -82,6 +84,22 @@ void devTestSetupMethod() {
     // testShapeLabel = new ShapeLabel(null, null, 100, "clock.svg", false, 10, 10, 120, 120);
 
     // Movement test
+
+
+    // Slider Test
+    testSlider = new Slider(testFrame, null, 0, 100);
+    testSlider.setPosition(300, 20);
+    testSlider.setIncrementUnit(5);
+    testSlider.setSize(150,50);
+
+    currentSliderValue = new TextLabel(testFrame, null, null, true);
+    currentSliderValue.setPosition(0, 400);
+    currentSliderValue.setSize(100,40);
+
+
+    // TextBox Test
+    TextBox testTextBox = new TextBox(null, null, null, true);
+    testTextBox.setPosition(16, 500);
     
 
 }
@@ -99,13 +117,15 @@ void devTestDrawMethod() {
         testFrame.setPosition(positions[0]+10*direction, positions[1]);
     }
 
+    currentSliderValue.setContent(Double.toString(testSlider.getCurrentValue()));
+
     // println(testTextButton.getSwitchState());
 }
 
 void test() {
     // moveTestFrame = !moveTestFrame;
     testIconButton.setSwitchState(true);
-    println("sike!!");
+    // println("sike!!");
 }
 
 void testSearch() {

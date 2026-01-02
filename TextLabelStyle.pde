@@ -17,6 +17,7 @@ public class TextLabelStyle {
     // Content
     float textSize;
     color textColor;
+    
     PFont fontStyle;
     float textTransparency;
     

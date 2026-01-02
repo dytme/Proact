@@ -154,8 +154,8 @@ abstract class UIElement implements StateDriven {
     // Positioning
     public void computeAbsolutePosition() {
         float parentPosition[] = parent.getPosition();
-        this.xAbs = parentPosition[0] + xPos - (this.xSize * xAnchor);
-        this.yAbs = parentPosition[1] + yPos - (this.ySize * yAnchor);
+        this.xAbs = parentPosition[0] + this.xPos - (this.xSize * this.xAnchor);
+        this.yAbs = parentPosition[1] + this.yPos - (this.ySize * this.yAnchor);
     }
 
     public void setAbsolute(float x, float y) { // Forcefully overwrites the absolute positioning of the element, without accounting for values like AnchorPoints or relative positioning

@@ -48,7 +48,7 @@ void setup() {
 void draw() {
     
     background(#FFBB00);
-    proactDrawLoop(this);
+    proactDrawLoop(this, mouseX, mouseY);
 
     devTestDrawMethod();
 
@@ -68,4 +68,14 @@ void mousePressed() {
 
 void mouseReleased() {
     proactMouseReleased();
+}
+
+
+void mouseDragged() {
+    proactMouseDragged(mouseX, mouseY);
+}
+
+
+void keyPressed() {
+    proactKeyPressed(key);
 }
