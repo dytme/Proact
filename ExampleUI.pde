@@ -87,10 +87,11 @@ void devTestSetupMethod() {
 
 
     // Slider Test
-    testSlider = new Slider(testFrame, null, 0, 100);
+    testSlider = new Slider(null, null, 0, 100);
     testSlider.setPosition(300, 20);
-    testSlider.setIncrementUnit(5);
+    testSlider.setIncrementUnit(2);
     testSlider.setSize(150,50);
+    testSlider.setMaxValue(20);
 
     currentSliderValue = new TextLabel(testFrame, null, null, true);
     currentSliderValue.setPosition(0, 400);
@@ -114,7 +115,7 @@ void devTestDrawMethod() {
         if (positions[0] > width - testFrame.getSize()[0]) direction = -1;
         if (positions[0] < 0) direction = 1;
 
-        testFrame.setPosition(positions[0]+10*direction, positions[1]);
+        testFrame.setPosition(positions[0]+ (float) testSlider.getCurrentValue()*direction, positions[1]);
     }
 
     currentSliderValue.setContent(Double.toString(testSlider.getCurrentValue()));
@@ -130,7 +131,7 @@ void test() {
 
 void testSearch() {
 
-    moveTestFrame = !moveTestFrame;
+    moveTestFrame = testIconButton.getSwitchState();
     
     testImageLabelDest.setVisible(!testImageLabelDest.visible);
 

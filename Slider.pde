@@ -70,11 +70,16 @@ public class Slider extends UIElement implements Container, Hoverable, Clickable
 
 
     // Update Slider-Specific Values
-    public void setMinValue(double newMinValue) { this.minValue = newMinValue; }
-    public void setMaxValue(double newMaxValue) { this.minValue = newMaxValue; }
+    public void setMinValue(double newMinValue) { this.minValue = newMinValue; constrainCurrentValue(); }
+    public void setMaxValue(double newMaxValue) { this.maxValue = newMaxValue; constrainCurrentValue(); }
 
     public void setIncrementUnit(int unit) { this.decimalPoints = unit; } // Up to how many decimals does currentValue round off to?
                                                                            // It's missnamed as this variable had different behaviour planned for it.
+
+    void constrainCurrentValue() {
+        if (currentValue < minValue) currentValue = minValue;
+        if (currentValue > maxValue) currentValue = maxValue;
+    }
 
     double roundValue(double newValue) { 
         // double roundingFactor = Math.pow(10, decimalPoints);
@@ -140,7 +145,8 @@ public class Slider extends UIElement implements Container, Hoverable, Clickable
         }
 
         // Draw the slider bar
-        fill(#68686C);
+
+        applet.fill(#68686C);
         applet.rect(
             this.xAbs,
             this.yAbs + this.ySize/2 -1,
@@ -150,7 +156,12 @@ public class Slider extends UIElement implements Container, Hoverable, Clickable
         );
 
         // Draw the draggable object
-        fill(#FFFFFF);
+        
+        applet.fill(#FFFFFF);
+        
+        applet.strokeWeight(1);
+        applet.stroke(#68686C);
+        
         applet.rect(
             map( (float) currentValue, (float) minValue, (float) maxValue, xAbs, xAbs+xSize) - 2,
             this.yAbs,
